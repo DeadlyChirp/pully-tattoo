@@ -1,0 +1,32 @@
+# ── secrets — NEVER commit ──────────────────────────────
+cookies.txt
+*.cookies
+.env
+.dev.vars
+worker/.dev.vars
+
+# ── scraped raw dumps + build intermediates (shipped images live in assets/img) ──
+_scrape/
+_scrape_test/
+raw/
+tools/_opt/
+tools/_thumbs/
+tools/_sheets/
+assets/img/thumb/
+
+# ── tooling / local ──────────────────────────────────────
+node_modules/
+.wrangler/
+.playwright-mcp/
+shot-*.jpeg
+shot-*.png
+var-*.jpeg
+new-*.jpeg
+m-*.jpeg
+ro-*.jpeg
+_v*.html
+
+# ── os cruft ─────────────────────────────────────────────
+Thumbs.db
+.DS_Store
+desktop.ini

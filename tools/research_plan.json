@@ -1,0 +1,414 @@
+{
+  "plan": {
+    "summary": "test",
+    "upgrades": [
+      {
+        "area": "a",
+        "idea": "b",
+        "how": "c",
+        "effort": "quick",
+        "impact": "high"
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "lane": "test",
+      "findings": [
+        {
+          "name": "a",
+          "takeaway": "b",
+          "apply": "c"
+        }
+      ]
+    },
+    {
+      "lane": "x",
+      "findings": [
+        {
+          "name": "Lenis on GSAP ticker",
+          "takeaway": "Shared clock kills jank.",
+          "apply": "lenis raf on gsap ticker; lagSmoothing off; delete css smooth scroll."
+        },
+        {
+          "name": "One scroll journey",
+          "takeaway": "Blend modes not toggle.",
+          "apply": "lerpVectors between float wall tunnel via scrubbed progress; pin stage."
+        },
+        {
+          "name": "Intro curtain",
+          "takeaway": "Premium first paint.",
+          "apply": "Loader awaits fonts then GSAP wipe; sessionStorage gated."
+        },
+        {
+          "name": "Lazy textures",
+          "takeaway": "Stop loading all 80 photos.",
+          "apply": "Placeholder first; swap nearest first; pause render offscreen."
+        }
+      ]
+    },
+    {
+      "lane": "Fine-line tattoo artist websites + quiet-luxury / editorial-minimal aesthetics + Pinterest fine-line branding references",
+      "techniques": [
+        "editorial serif/sans pairing",
+        "single-accent color restraint",
+        "generous whitespace rhythm",
+        "unified neutral photo treatment",
+        "calm lowercase microcopy",
+        "curated booking request flow",
+        "asymmetric editorial grid",
+        "Lenis + GSAP buttery scroll"
+      ],
+      "libraries": [
+        "GSAP 3 + ScrollTrigger (CDN, no build) - scroll-reveal, pinned sections, headline reveals",
+        "Lenis (CDN) - inertial smooth-scroll that pairs with ScrollTrigger for the buttery 'đỉnh liền mạch' feel",
+        "SplitType (CDN) - per-line / per-char serif headline reveals without a bundler",
+        "OGL (CDN, already named as acceptable in brief) - lighter WebGL option for subtle grain/displacement if Three.js feels heavy for the accent layer"
+      ],
+      "findings": [
+        {
+          "name": "Atelier Eva (Brooklyn fine-line / micro-realism studio)",
+          "url": "https://www.ateliereva.com/",
+          "what": "Leading fine-line + micro-realism studio site. Note: the LIVE site is now pure black-and-white sans-serif (Neue Haas Grotesk), centered text-first hero, generous whitespace, gallery via Instagram-grid embeds, booking via a Typeform 'Create Your Tattoo' CTA repeated in nav + hero + artist cards. Its widely-cited 'serif + beige, gallery-like' phase still circulates in design roundups (fontsinuse documents the custom Florentine-based logotype) and is the more useful reference for Pully.",
+          "takeaway": "Two lessons: (1) the calmest version wins - one repeated booking CTA, huge whitespace, zero decoration; (2) the earlier serif+warm-neutral identity is closer to Pully's brief than the current cold mono version, so Pully can occupy the 'warm editorial gallery' space Atelier Eva vacated.",
+          "apply": "Keep Pully's Cormorant + ivory warmth (it is the differentiator). Repeat ONE booking CTA consistently (nav 'Book', hero 'Book an appointment', and a closing band) using identical wording. Treat the artist bio page like a gallery wall: portrait + name in Cormorant + tiny tracked specialties line, lots of air. Avoid live Instagram embeds - they break the unified photo treatment; host curated images instead."
+        },
+        {
+          "name": "Dr. Woo (single-needle fine-line pioneer)",
+          "url": "https://www.instagram.com/_dr_woo_/",
+          "what": "The reference fine-line artist; built reputation almost entirely on a consistent, restrained image feed - intricate single-needle work shot on neutral skin against quiet backgrounds, minimal captions.",
+          "takeaway": "For fine-line, the WORK photographed consistently is the entire brand. A coherent, neutral, watermark-light image set out-performs any UI flourish. Captions are short and quiet.",
+          "apply": "Define a strict image spec for Pully's gallery feed (see photo-treatment finding) and apply it to all 3D modes so every piece in the floating cloud / curved-wall / tunnel reads as one body of work. Keep lightbox captions to 1 short line in tracked sans (motif + placement), nothing salesy."
+        },
+        {
+          "name": "Photographing fine-line work for a unified portfolio (Cocreate / Lume Cube guides)",
+          "url": "https://www.cocreate.ink/articles/how-to-photograph-tattoos",
+          "what": "Practical specs from tattoo-photography guides: soft diffused light at 45deg to avoid glare, neutral matte background (matte black / neutral grey / raw studio wall), 4000-5000K neutral white, keep the setup consistent across shots, avoid over-saturation and skin-smoothing.",
+          "takeaway": "Consistency of background, light temperature and crop is what makes a portfolio look 'editorial' rather than 'a phone gallery'. The image set, not the website chrome, carries the quiet-luxury feel.",
+          "apply": "Standardise every gallery image: same warm-neutral / charcoal backdrop, soft 45deg light, ~4500K, tight consistent crop, no heavy filters. In code, give all gallery textures a uniform subtle treatment (slight desaturation + faint film grain via a CSS/WebGL overlay) so even mixed-source photos cohere. Add a small, low-opacity 'pully.ink' watermark in one fixed corner only."
+        },
+        {
+          "name": "Awwwards editorial-layout & minimal collections (Cormorant + asymmetric grids)",
+          "url": "https://www.awwwards.com/inspiration/editorial-layout",
+          "what": "Award-winning editorial portfolios pair a stunning serif (Cormorant specifically called out) with a simple sans, hold an 'incredibly light interface through negative space and asymmetrical grids', and use large headlines with rhythmic spacing that guide the eye.",
+          "takeaway": "Award-quality minimal = expressive serif + huge negative space + deliberate asymmetry + scroll rhythm, NOT more effects. 'Quietly confident' beats busy.",
+          "apply": "Break the current centered symmetry in About/Signatures: set the section title off to one column, captions small and tracked in the other; use unequal column widths. Add Lenis + GSAP ScrollTrigger so headlines reveal line-by-line (SplitType) and sections fade/translate in on scroll - this delivers the 'đỉnh liền mạch' buttery feel without a bundler."
+        },
+        {
+          "name": "Lass Tattoo (Webflow, 'tranquil not edgy' minimal)",
+          "url": "https://lasstattoo.com/",
+          "what": "Cited as a model of what clean minimal design does for a solo fine-line artist - tranquil rather than edgy, restrained palette, clear portfolio organization.",
+          "takeaway": "A solo fine-line artist reads as premium by being calm and well-organised, not dark/grungy. Clear named categories beat one big undifferentiated grid.",
+          "apply": "Pully already has the right category language (Botanical / Lettering / Animals / Symbols / Keepsakes). Let those filter the gallery (tap a Signature -> gallery shows that motif). Keep tone tranquil: avoid heavy shadows, neon, or aggressive motion."
+        },
+        {
+          "name": "Hanoi fine-line scene + Vietnamese type support (Silver Ant, OCD Ink, Vietcetera)",
+          "url": "https://vietcetera.com/en/top-five-tattoo-places-in-hanoi",
+          "what": "Hanoi's fine-line peers (Silver Ant ~32K IG, OCD Ink, H2M, LaThanh) lead with minimalist/ornamental work and an Instagram-first presence; most have functional-but-generic sites.",
+          "takeaway": "The local competitive bar is low on web craft - a genuinely editorial, buttery site is a real differentiator for Pully in Hà Nội. Vietnamese diacritics must render perfectly everywhere.",
+          "apply": "Lean into the gap: ship the polished motion + unified gallery the locals lack. Confirm Be Vietnam Pro covers all diacritics for body/labels, and verify Cormorant Garamond renders Vietnamese display text (ữ, ọ, ấ, etc.) - if any glyphs fall back, restrict Cormorant to Latin/brand words and set Vietnamese display in a diacritic-safe serif. Keep place name 'Hà Nội' and address fully accented."
+        },
+        {
+          "name": "Premium tattoo booking-as-request pattern (Venue.ink / Tattoo Studio Pro)",
+          "url": "https://www.venue.ink/tattoo-booking-forms",
+          "what": "Premium studios use a custom request form (placement, size, reference upload, a few words on the idea), artist approves/declines before confirming, and a deposit filters non-serious enquiries - framed as a seamless step, not friction.",
+          "takeaway": "For a curated artist, booking should feel like applying to be tattooed, not buying a ticket. The 'request -> artist confirms' framing reinforces exclusivity and is the honest model for one solo artist.",
+          "apply": "Reframe Pully's form copy from 'Book an appointment' to a quiet 'Request a session' / 'Tell me about your piece'. Fields: name, contact (IG/Zalo), motif/category, placement, approx size, a few words, optional reference upload, preferred month. End with 'I review every request personally and reply within a few days.' Show the deposit as a calm one-liner, not a paywall. Calendar shows month availability as a soft signal (open/limited), confirmation still goes through Pully."
+        },
+        {
+          "name": "Single-red-accent strategy for fine-line branding (Pinterest 'Red Fine Line Tattoo' + 2026 soft-accent trend)",
+          "url": "https://www.pinterest.com/ideas/red-fine-line-tattoo/921805433841/",
+          "what": "Pinterest fine-line boards show the on-trend move: predominantly black/grey linework with a single soft red/coral accent (a red star, one red bloom). 2026 reporting frames this as 'soft color accents replacing fully saturated work, keeping the minimalist aesthetic intact'.",
+          "takeaway": "The single-red accent is literally Pully's tattoo style mirrored in the UI - the brand and the artwork share one rule: one restrained red against quiet black/ivory. That coherence is the whole identity.",
+          "apply": "Codify a strict red budget in CSS: red appears ONLY on (1) the active/hover state of the single primary CTA, (2) one italic Cormorant accent word per section max, (3) the calendar 'open' dot / availability tick, (4) a 1px link underline on hover. Everything else stays ivory/charcoal. Use #C8362A as-is; reserve #E0594B only for hover lift. The restraint makes each red moment feel intentional, exactly like one red bloom in a black-line bouquet."
+        }
+      ]
+    },
+    {
+      "lane": "Component sources, MCP servers, and free production assets (CDN drop-in vs build-step), tailored to the PULLY no-build static site (HTML/CSS/JS + Three.js via CDN importmap). Verdict up front: skip the React/Tailwind component MCPs for THIS site (they need a bundler), but the magic MCP's logo_search is still usable, and there is a strong stack of true drop-in CDN libraries + CC0/MIT assets that fit the fine-line \"quiet luxury\" brief perfectly.",
+      "libraries": [
+        "GSAP 3.13 + ScrollTrigger (CDN, free incl. all plugins) — cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js + ScrollTrigger.min.js",
+        "Lenis smooth-scroll (CDN) — unpkg.com/lenis@1.1.13/dist/lenis.min.js",
+        "OGL (CDN, ~lightweight WebGL) — cdn.jsdelivr.net/npm/ogl/dist/ogl.mjs",
+        "Three.js (already in build via importmap)",
+        "Motion (motion.dev, CDN ESM) — alternative/companion to GSAP, native WAAPI, tiny",
+        "Hover.css (CDN, MIT, CSS-only) — cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css",
+        "Google Fonts: Cormorant Garamond + Be Vietnam Pro (both ship a vietnamese subset); Viaoda Libre as optional Vietnamese-heritage display accent"
+      ],
+      "techniques": [
+        "Lenis + GSAP ScrollTrigger sync (lenis.on('scroll', ScrollTrigger.update) + gsap.ticker loop, lagSmoothing(0)) for buttery scroll-reveal",
+        "OGL/Three displacement-map liquid distortion on gallery image hover (Codrops)",
+        "feTurbulence inline-SVG film grain / paper-noise overlay (CSS, no asset, resolution-independent)",
+        "requestAnimationFrame lerp custom cursor with SVG-filter morph on hover (Codrops)",
+        "Mouse-following image-trail effect on hero/gallery (Codrops ImageTrailEffects, MIT)",
+        "Repetition / image-reveal link hover effects for nav + Signatures section (Codrops, MIT)",
+        "subset=vietnamese + font-display:swap on Google Fonts links to keep diacritics crisp and load fast"
+      ],
+      "findings": [
+        {
+          "name": "21st.dev (component marketplace)",
+          "url": "https://21st.dev",
+          "what": "Community marketplace of polished UI 'blocks' (heroes, galleries, CTAs, marketing sections) and components.",
+          "takeaway": "Beautiful, but every component is React + shadcn/ui + Tailwind + Radix — it assumes a JSX/Tailwind build. It is NOT drop-in for a vanilla HTML/CSS/JS site.",
+          "apply": "NEEDS A BUILD STEP. Do not wire it into Pully directly. Use it for visual inspiration only — browse hero/gallery/booking-form layouts, then hand-port the look in plain HTML/CSS. Porting a single component's CSS by hand is realistic; adopting the library is not without migrating to Vite/Next."
+        },
+        {
+          "name": "magic MCP — 21st_magic_component_builder / _inspiration",
+          "url": "https://www.pulsemcp.com/servers/21stdev-magic-ui-generator",
+          "what": "21st.dev's MCP server: natural-language -> generated React/TS + Tailwind + shadcn component, plus an inspiration browser. Freemium (~5 free gen/mo, $20/mo).",
+          "takeaway": "Output is React/Tailwind code, same build-step problem as the marketplace. The _inspiration tool returns JSON/snippets you can read for ideas without committing code.",
+          "apply": "NEEDS A BUILD STEP for its main output. For Pully, use 21st_magic_component_inspiration as a research/mood tool only; don't paste its JSX into the static site."
+        },
+        {
+          "name": "magic MCP — logo_search",
+          "url": "https://glama.ai/mcp/servers/@21st-dev/magic-mcp",
+          "what": "Same magic MCP, but this tool returns brand logos/icons and CAN output raw SVG (not just JSX/TSX).",
+          "takeaway": "This is the one part of the magic MCP that IS no-build-friendly because SVG pastes straight into HTML.",
+          "apply": "DROP-IN VIA SVG. Use logo_search(format:'SVG') to grab the Instagram / TikTok / Facebook icons for Pully's contact + booking footer as clean inline SVG you can recolor to charcoal #141009 or the red accent #C8362A."
+        },
+        {
+          "name": "GSAP 3.13 + ScrollTrigger",
+          "url": "https://gsap.com/docs/v3/Installation/",
+          "what": "Industry-standard animation + scroll-trigger toolkit. Since Webflow's acquisition, GSAP and ALL plugins (ScrollTrigger, SplitText, etc.) are 100% free for commercial use as of v3.13 (April 2025).",
+          "takeaway": "Framework-agnostic, loads via a plain <script> tag, no build needed. The single biggest upgrade lever for 'award-quality' on a static site. (Only restriction: can't use it to build a Webflow competitor — irrelevant here.)",
+          "apply": "DROP-IN VIA CDN. Add <script src='https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js'></script> + the ScrollTrigger build, then gsap.registerPlugin(ScrollTrigger). Drive Pully's section scroll-reveals, hero text stagger, parallax on About imagery, and pinned transitions between the 3 gallery modes. Use SplitText (now free) for line-by-line Cormorant headline reveals."
+        },
+        {
+          "name": "Lenis smooth-scroll",
+          "url": "https://github.com/darkroomengineering/lenis",
+          "what": "Tiny, modern smooth-scroll that keeps native DOM scroll (good for accessibility/INP) instead of hijacking it.",
+          "takeaway": "This is what makes a site feel 'liền mạch'/buttery. Loads via CDN in one line and syncs cleanly with GSAP ScrollTrigger.",
+          "apply": "DROP-IN VIA CDN (unpkg.com/lenis). Init Lenis, then bridge it: lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t=>lenis.raf(t*1000)); gsap.ticker.lagSmoothing(0). Gives Pully the cinematic, weighted scroll a premium portfolio needs. Respect prefers-reduced-motion by skipping init."
+        },
+        {
+          "name": "OGL (lightweight WebGL)",
+          "url": "https://tympanus.net/codrops/tag/ogl/",
+          "what": "Minimal WebGL library by Nathan Gordon, much smaller than Three.js, ships as an ES module.",
+          "takeaway": "If the 3D gallery is the only heavy WebGL need, OGL can power image-hover distortion shaders far more cheaply than another Three.js scene. Honestly: Pully already loads Three.js via importmap, so for the gallery itself stick with Three; reach for OGL only for lightweight standalone shader hovers if you want to avoid a second Three scene.",
+          "apply": "DROP-IN VIA CDN (importmap entry to cdn.jsdelivr.net/npm/ogl). Use for a subtle liquid/displacement distortion on lightbox thumbnails so fine-line tattoo images 'ripple' on hover — restrained, matching quiet-luxury."
+        },
+        {
+          "name": "Motion (motion.dev)",
+          "url": "https://motion.dev/",
+          "what": "Animation library built on native browser APIs (WAAPI); ~1/7th GSAP's size, can run off the main thread, usable in vanilla JS via CDN ESM.",
+          "takeaway": "A lighter alternative for simple enter/hover animations. GSAP is still the better pick for Pully's complex timelines/ScrollTrigger; mention as the lean option if bundle weight ever becomes a concern.",
+          "apply": "DROP-IN VIA CDN (ESM import). Optional. Could handle small UI micro-animations (button press, calendar day hover) while GSAP owns the cinematic scroll work. Don't load both unless justified."
+        },
+        {
+          "name": "Codrops demos (ImageTrail, ImageReveal, RepetitionHover, custom cursor)",
+          "url": "https://github.com/codrops",
+          "what": "Tympanus/Codrops publishes the actual source for high-end effects: ImageTrailEffects, ImageRevealHover, RapidImageHoverMenu, RepetitionHoverEffect, AnimatedCustomCursor — mostly vanilla JS.",
+          "takeaway": "These are exactly the editorial/fashion micro-interactions Pully wants, and the downloadable demo CODE is MIT-licensed (free for commercial use, full modification). Caveat: design freebies/images bundled in demos may NOT be resold/redistributed — swap in Pully's own tattoo photos.",
+          "apply": "DROP-IN (copy vanilla JS/CSS, swap assets). Use ImageReveal/RepetitionHover on the Signatures + nav links; AnimatedCustomCursor for an SVG fine-line cursor (a thin ring that morphs/grows over gallery items, tinted #C8362A); ImageTrail optionally on the hero. Pull source from each repo's GitHub."
+        },
+        {
+          "name": "Hover.css",
+          "url": "https://cdnjs.com/libraries/hover.css",
+          "what": "100+ CSS-only hover effects (2D transitions, underline sweeps, glow, border) prefixed hvr-. MIT for personal/open-source use.",
+          "takeaway": "Zero-JS, single CSS file from CDN — the safest possible drop-in for button/link polish. Note licensing nuance: MIT covers personal/OSS; Ian Lunn sells a separate commercial license, so for a paid client deliverable confirm the license (for a personal birthday gift the MIT path is fine).",
+          "apply": "DROP-IN VIA CDN (cdnjs hover.css/2.3.1). Apply restrained underline-sweep (hvr-underline-from-center) to nav + booking CTA in the red accent. Use sparingly — pick 1-2 effects so it stays 'quiet luxury', not flashy."
+        },
+        {
+          "name": "Cormorant Garamond + Be Vietnam Pro (Google Fonts, Vietnamese subset)",
+          "url": "https://fonts.google.com/specimen/Be+Vietnam+Pro",
+          "what": "Pully's chosen pair. Confirmed: both expose a 'vietnamese' subset on Google Fonts; Be Vietnam Pro was purpose-built with refined Vietnamese diacritics, and Cormorant includes Vietnamese Unicode ranges.",
+          "takeaway": "The current type choice is correct and free. The key is loading the vietnamese subset so Hà Nội diacritics render perfectly.",
+          "apply": "DROP-IN VIA CDN. In the Google Fonts <link>, ensure the vietnamese subset is included and add &display=swap. Use Be Vietnam Pro for all Vietnamese body/UI copy (booking form, calendar) and Cormorant for English/Latin display headings."
+        },
+        {
+          "name": "Viaoda Libre (Google Fonts)",
+          "url": "https://fonts.google.com/specimen/Viaoda+Libre",
+          "what": "Free display serif by a Vietnamese designer, inspired by Vietnamese cultural symbolism/script; works for titles and small text.",
+          "takeaway": "A meaningful, on-brand optional accent face that ties the 'editorial' look to PULLY's Vietnamese identity — a thoughtful birthday-gift detail.",
+          "apply": "DROP-IN VIA CDN (optional). Consider for one signature moment — e.g. the artist's name 'PULLY' or a single section title — to add Vietnamese character without disrupting the Cormorant/Be Vietnam Pro system. Use once, not everywhere."
+        },
+        {
+          "name": "feTurbulence SVG grain / noise overlay",
+          "url": "https://css-tricks.com/grainy-gradients/",
+          "what": "Native SVG filter (feTurbulence + feColorMatrix) that generates resolution-independent film-grain/paper noise with no image asset.",
+          "takeaway": "The cleanest way to add the warm-ivory 'paper' tactility and a subtle grain that reads as premium print — inline, tiny, free, no HTTP request.",
+          "apply": "DROP-IN (inline SVG + CSS). Add a fixed full-viewport overlay div with the feTurbulence filter at very low opacity (~3-6%), mix-blend-mode multiply over the #F7F3EC ivory, so the whole site feels like fine art paper. Generate/tune with frontend-hero.com/css-noise-generator or uwarp.design/nnnoise."
+        },
+        {
+          "name": "Noise/grain generators (nnnoise, Frontend Hero, Ultimate Design Tools)",
+          "url": "https://www.uwarp.design/nnnoise",
+          "what": "Free online tools that output copy-paste SVG/CSS noise with adjustable grain size, color, and opacity.",
+          "takeaway": "Lets you dial the exact subtle grain for Pully rather than hand-writing feTurbulence params.",
+          "apply": "DROP-IN (generated CSS/SVG). Tune a single grain value, then paste once. Also see freecodecamp.org/news/grainy-css-backgrounds-using-svg-filters for the technique writeup."
+        },
+        {
+          "name": "FreeSVG.org / SVG Silh / Rawpixel (CC0 fine-line + botanical motifs)",
+          "url": "https://freesvg.org/1539641420",
+          "what": "Public-domain/CC0 vector sources: FreeSVG.org and SVG Silh release under CC0 (copy/modify/commercial OK); Rawpixel has CC0 public-domain botanical/floral line art and vintage illustration.",
+          "takeaway": "Truly free decorative fine-line/botanical SVG motifs for section dividers, corner ornaments, and the booking card — CC0 means no attribution and commercial-safe. (Avoid Etsy/Vecteezy 'free' items that carry per-license restrictions.)",
+          "apply": "DROP-IN (inline SVG, recolor to currentColor). Use a delicate single-line botanical sprig as a section divider and a thin ornamental flourish under the 'PULLY' wordmark; recolor strokes to charcoal with one accent stroke in #C8362A. Inline them so you can animate stroke-dashoffset draw-on with GSAP."
+        }
+      ]
+    },
+    {
+      "lane": "Open-source GitHub repos & code techniques for Three.js / WebGL image galleries and smooth scroll — usable from CDN without a bundler, tailored to PULLY's static Three.js (importmap, jsdelivr) build.",
+      "libraries": [
+        "Lenis (smooth scroll) — CDN: https://unpkg.com/lenis@1.3.23/dist/lenis.min.js + https://unpkg.com/lenis@1.3.23/dist/lenis.css — MIT, ~4KB gz, NO bundler needed",
+        "GSAP + ScrollTrigger — CDN: https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js + https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js — standard 'no charge' license, NO bundler needed",
+        "OGL (minimal WebGL lib, ESM) — CDN: https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm (use via importmap like the existing three entry) — license: Unlicense (public domain), NO bundler needed",
+        "Three.js 0.161.0 — already in the project via importmap (https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js) — MIT",
+        "curtains.js (HTML DOM -> WebGL textured planes) — CDN available on jsdelivr/unpkg (npm 'curtainsjs') — MIT, NO bundler needed (alternative to writing raw Three.js plane sync)"
+      ],
+      "techniques": [
+        "Velocity-driven vertex bend: read smoothed scroll velocity into a uniform, offset plane vertices in Z with a sine curve across screen-space UVs (the signature 'curved film' look)",
+        "Circular/cylinder layout via JS: position.y = cos((x/widthTotal)*PI)*R - R so planes arc; wrap 'extra' offset by total width for infinite loop",
+        "lerp smoothing of target scroll -> current scroll for buttery motion even without Lenis (used by Codrops galleries)",
+        "Lenis + GSAP single-RAF sync: lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t*1000)); gsap.ticker.lagSmoothing(0) — one loop drives smooth scroll, ScrollTrigger, and the WebGL render",
+        "data-lenis-prevent attribute on the booking-form / lightbox / scrollable modal so smooth-scroll hijacking doesn't break inner scroll",
+        "Mood/atmosphere background: per-image color palette interpolated by scroll depth + film grain in a fullscreen shader (ties to PULLY's ivory/charcoal/red accent)",
+        "GSAP ScrollTrigger pin + scrub + snap for a horizontal pinned gallery section",
+        "Hover chromatic aberration / directional 'magnetic push' distortion computed in fragment shader by pixel distance to mouse"
+      ],
+      "findings": [
+        {
+          "name": "darkroomengineering/lenis (formerly studio-freight/lenis)",
+          "url": "https://github.com/darkroomengineering/lenis",
+          "what": "The de-facto smooth-scroll library used on most award-winning sites. ~4KB gz, MIT, zero deps. Wraps native scroll so position:sticky, anchor links and a11y keep working.",
+          "takeaway": "This is the single highest-impact 'seamless/buttery' upgrade and it is a pure drop-in CDN script — no build step. It exposes scroll velocity, which is exactly the signal the WebGL gallery wants.",
+          "apply": "Add the CDN <script>/<link> to index.html. Init new Lenis(), then sync GSAP: lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t=>lenis.raf(t*1000)); gsap.ticker.lagSmoothing(0). Feed lenis velocity into the gallery's existing 3D modes as a uniform for subtle drift/bend. Put data-lenis-prevent on the booking form and the lightbox so inner scroll still works."
+        },
+        {
+          "name": "Codrops — Infinite Circular Gallery (OGL + GLSL) + repo lhbizarro/infinite-circular-webgl-gallery",
+          "url": "https://tympanus.net/codrops/2021/02/23/creating-an-infinite-circular-gallery-using-webgl-with-ogl-and-glsl-shaders/",
+          "what": "Canonical tutorial + MIT repo for a curved/cylinder infinite gallery driven by drag + wheel. Planes arc via position.y = cos((x/widthTotal)*PI)*R - R; a uSpeed uniform warps vertices on fast scroll.",
+          "takeaway": "This is the reference implementation for the 'curved-wall orbit' mode you already have. The math (arc positioning + infinite wrap by total width + velocity warp) is directly portable to Three.js, and it shows how to make scroll feel physical.",
+          "apply": "Port the arc-position + infinite-wrap logic into the existing curved-wall mode in gallery.js. Add a uSpeed uniform fed by Lenis velocity to bend planes during fast scroll, then settle. Tune R and segment count so it reads as a delicate cylinder, not a carnival ring — fits the 'quiet luxury' brand. (Repo uses webpack but the technique is bundler-agnostic; reimplement against the project's existing three import.)"
+        },
+        {
+          "name": "bizarro — infinite-webl-gallery (linear) + infinite-circular-webgl-gallery",
+          "url": "https://github.com/bizarro/infinite-webl-gallery",
+          "what": "Two MIT reference repos (OGL + GLSL) for infinite auto-scrolling galleries — one flat/linear, one circular. Includes the lerp-smoothed target-scroll pattern and velocity-to-distortion uniforms.",
+          "takeaway": "Best minimal, readable source for the core 'infinite loop + smooth + distort' loop without framework noise. The linear one is a clean basis for a 'depth tunnel'/strip mode.",
+          "apply": "Lift the scroll-lerp loop (target vs current, multiply delta into a uSpeed uniform) into the project's render loop so even the floating-cloud and tunnel modes inherit weighty, smoothed motion. Keep distortion amplitude low for fine-line elegance."
+        },
+        {
+          "name": "Codrops — Scroll-Reactive 3D Depth Gallery + repo houmahani/codrops-depth-gallery",
+          "url": "https://github.com/houmahani/codrops-depth-gallery",
+          "what": "Feb/Mar 2026 Three.js tutorial: smoothed scroll velocity drives parallax, scroll-drift, a 'breath' tilt/scale, plus mood-based background that interpolates each image's 3-color palette as you move through depth, with film grain.",
+          "takeaway": "Most current, on-trend reference and it maps perfectly onto your existing depth-tunnel mode. The palette-interpolation background is a premium touch that can be themed to ivory/charcoal with the single red accent.",
+          "apply": "Adopt the velocity->parallax/drift/breath layering for the depth-tunnel mode. Replace its rainbow palettes with PULLY's: background blobs in warm ivory #F7F3EC over charcoal #141009, with the #C8362A accent bleeding in only on fast scroll (brightness/accent lift). Add a faint film-grain shader pass for editorial texture. (Uses Vite; technique is portable — reimplement in the static build.)"
+        },
+        {
+          "name": "Manishbhai9350/Curvy-Project-Showcase",
+          "url": "https://github.com/Manishbhai9350/Curvy-Project-Showcase",
+          "what": "Three.js portfolio where scroll velocity bends 3D project cards (sine-based Z bend across screen-space UVs) plus a post-process fragment 'magnetic push' toward the mouse and procedural edge noise. Demo: https://curvy-project-showcase.onrender.com/",
+          "takeaway": "Great visual target for a click-to-expand portfolio card that bends as it grows — could elevate your lightbox/expand interaction beyond a flat modal.",
+          "apply": "Use its expand-while-bending idea for the lightbox: when a gallery image is selected, animate it into a slightly curved plane (GSAP-tweened bend uniform) rather than a hard cut. Pairs with the mouse-push distortion for a tactile feel. Note: repo requires Vite, so treat as a technique reference, not a copy-paste — reimplement the shader against three."
+        },
+        {
+          "name": "martinlaxenaire/curtainsjs",
+          "url": "https://github.com/martinlaxenaire/curtainsjs",
+          "what": "MIT vanilla WebGL lib that turns existing <img> DOM elements into shader-animated WebGL planes that stay synced to the DOM on scroll/resize. Supports post-processing, FBOs, hover/scroll distortion (e.g. chromatic aberration).",
+          "takeaway": "An alternative architecture: keep real, accessible, SEO-friendly <img> tags in the DOM and add WebGL distortion on top — lower risk than fully custom geometry, and it handles scroll-sync jank for you. CDN-ready, no bundler.",
+          "apply": "If a fully custom Three.js gallery feels heavy to maintain, use curtains.js for the gallery grid: real images for accessibility/fallback, with a subtle hover chromatic-aberration + scroll-velocity ripple shader in brand greys. Good progressive-enhancement fallback path if WebGL is unsupported."
+        },
+        {
+          "name": "OGL (oframe/ogl)",
+          "url": "https://github.com/oframe/ogl",
+          "what": "Minimal ES-module WebGL library (Unlicense / public domain), Three-like API but tiny. Loadable from CDN as ESM (https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm). It's the library behind the Codrops circular/linear gallery tutorials.",
+          "takeaway": "If gallery weight/perf matters, OGL is far lighter than Three.js for a dedicated gallery scene and the best-documented gallery tutorials are written for it — but mixing two WebGL libs adds bytes.",
+          "apply": "Optional: add an 'ogl' importmap entry next to the existing 'three' entry to run the Codrops circular-gallery code closer to verbatim. Otherwise prefer porting the techniques into the existing Three.js scene to avoid shipping two WebGL libraries. License (Unlicense) means zero attribution constraints."
+        },
+        {
+          "name": "GSAP ScrollTrigger — horizontal pin gallery patterns",
+          "url": "https://codepen.io/robbiecren07/pen/PoZXver",
+          "what": "Reference CodePens (incl. official GreenSock collection https://codepen.io/collection/DkvGzg) for pin + scrub + snap horizontal galleries: pin a section and translate a track by its scrollWidth as the user scrolls vertically.",
+          "takeaway": "A non-WebGL, low-risk way to add a cinematic 'editorial' moment (e.g. a horizontal 'Signatures' strip) that feels premium and pairs naturally with Lenis.",
+          "apply": "Wrap the Signatures or a curated 'best work' row in a ScrollTrigger pin+scrub track for a horizontal scroll beat between the 3D gallery and booking. Add snap to land cleanly on each image; keep easing slow for the quiet-luxury tone."
+        }
+      ]
+    },
+    {
+      "lane": "Award-winning immersive / seamless Three.js & WebGL portfolio and gallery websites",
+      "libraries": [
+        "Lenis (smooth scroll) — CDN: https://unpkg.com/lenis@1.3.23/dist/lenis.min.js + lenis.css; UMD global `Lenis`, no bundler",
+        "GSAP 3 + ScrollTrigger — CDN: https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js and .../ScrollTrigger.min.js; UMD globals, no bundler",
+        "Three.js (already in build via importmap) — also exposes addons: three/addons/postprocessing/{EffectComposer,RenderPass,BokehPass,UnrealBloomPass}.js via the same importmap, no bundler",
+        "OGL — lighter WebGL alt for the infinite circular gallery (CDN ESM available); only if you want a dedicated curved-gallery mode, otherwise stay on Three.js",
+        "curtains.js — vanilla WebGL DOM-plane library for image-to-3D + page-transition curtain reveals (CDN, no bundler) — optional"
+      ],
+      "techniques": [
+        "Lenis smooth-scroll as the single master loop, driving page scroll + a `uScrollVelocity` uniform + GSAP ScrollTrigger off one RAF tick (gsap.ticker.add → lenis.raf; gsap.ticker.lagSmoothing(0))",
+        "Scroll-velocity-driven vertex bend: position.y -= sin(uv.x*PI) * clamp(uScrollVelocity) * sign(uScrollVelocity) * k — the planes 'bow' as you fly through the tunnel/float, the single biggest 'seamless' upgrade",
+        "Curved/cylinder layout via trig: map x-position to rotationY (Math.PI..-Math.PI) and cos((x/total)*PI) Y-arc — upgrade the existing 'wall' mode into a true infinite circular gallery with drag inertia + snap-to-center",
+        "RGB-channel-split displacement on hover: offset red/blue UVs by mouse velocity * strength, merge with original — restrained chromatic shimmer on the focused tattoo plane",
+        "Scroll-velocity → camera scrub with GSAP ScrollTrigger scrub timeline: tie travel (0..1) to actual page scroll instead of wheel deltas, so the 3D camera and the page move as one continuous surface",
+        "In-WebGL fade reveal: full-screen black quad whose opacity is a uniform tweened by GSAP on THREE.LoadingManager onLoad — premium intro loader with no DOM flash",
+        "Depth-of-field via BokehPass in EffectComposer (addons over importmap) — focus the centered/hovered plane, blur the rest; the defining 'expensive' look for fine-line work",
+        "Inertia/lerp everywhere: scroll.current lerps toward scroll.target at ease 0.05–0.1; drag adds velocity, decays *0.94 — already partially in Pully's wall mode, extend to all input",
+        "Film grain in the fragment shader gated by interaction (uMouseEnter + uScrollVelocity) — subtle, restraint-based, matches 'quiet luxury'",
+        "Mood/palette-driven background that blends between planes by camera depth — let each tattoo's dominant tone subtly tint the charcoal void, with the single red accent as the only saturated color"
+      ],
+      "findings": [
+        {
+          "name": "Codrops — Infinite Circular Gallery (OGL + GLSL)",
+          "url": "https://tympanus.net/codrops/2021/02/23/creating-an-infinite-circular-gallery-using-webgl-with-ogl-and-glsl-shaders/",
+          "what": "Draggable + scrollable infinite cylinder of image planes. Curvature is pure trig: map(plane.x, -total, total, PI, -PI) drives rotationY; cos((x/total)*PI)*75-75 gives the vertical arc. Inertia via lerp(scroll.current, scroll.target, 0.05); debounced onCheck() snaps the nearest item to center; an `extra` offset wraps items for true infinity. A `uSpeed` uniform feeds velocity-based bend.",
+          "takeaway": "This is the canonical recipe for the curved/cylinder gallery feel — the curvature and the snap-to-center are what make it read as 'premium' rather than a flat carousel.",
+          "apply": "Upgrade Pully's existing 'wall' mode (currently a static cylinder you orbit) into this: keep the cylinder math but add (1) lerp-based scroll target so drag has real inertia, (2) debounced snap so a tattoo always settles dead-center, (3) the cos() vertical arc so edge pieces gently dip — turning 'wall' into a signature browsable shelf of fine-line work."
+        },
+        {
+          "name": "Codrops — Scroll-Reactive 3D Gallery with Velocity + Mood Backgrounds (Three.js)",
+          "url": "https://tympanus.net/codrops/2026/03/09/building-a-scroll-reactive-3d-gallery-with-three-js-velocity-and-mood-based-backgrounds/",
+          "what": "Depth-stacked planes at z = -index*gap; camera flies through Z on scroll, smoothed by lerp. A reusable scroll-velocity signal (frame delta, damped, clamped, threshold-zeroed) drives: brightness lift on fast scroll, a 'breath' tilt/pulse, and mouse parallax. Each image supplies palette colors that blend between planes by camera depth, rendered as soft smoothstep blobs + film grain. Notably uses NO Lenis/GSAP — vanilla Three.js math.",
+          "takeaway": "Treats scrolling as 'time passing,' not navigation — velocity becomes the central expressive signal feeding many small effects at once. That layering of micro-responses is exactly what 'đỉnh liền mạch / buttery' means.",
+          "apply": "Pully's 'tunnel' mode already stacks planes down -Z — add a damped velocity signal and feed it into a subtle brightness lift + a gentle plane tilt while traveling. Use each tattoo's dominant tone as a faint depth-blended tint on the charcoal background, reserving #C8362A as the only place real saturation appears (e.g. accent pieces glow faintly red as they pass focus)."
+        },
+        {
+          "name": "Codrops — Distortion & Grain on Scroll with Shaders (Three.js + Lenis)",
+          "url": "https://tympanus.net/codrops/2024/07/18/how-to-create-distortion-and-grain-effects-on-scroll-with-shaders-in-three-js/",
+          "what": "Vertex shader bows planes by scroll velocity: position.y -= sin(uv.x*PI) * min(abs(uScrollVelocity),5.0) * sign(uScrollVelocity) * -0.01 (a 'perfect bow', direction-preserving, capped). uScrollVelocity comes straight from Lenis. Fragment shader adds 2D-noise grain constrained to a cursor-following circle, blended in via mix() gated by uMouseEnter + uScrollVelocity*0.1.",
+          "takeaway": "The premium feel is intentional restraint: effects only fire during interaction, the displacement factor is tiny (0.01), grain is localized. Micro-distortion that enhances rather than overwhelms.",
+          "apply": "This is the highest-leverage change for Pully. Pipe Lenis velocity into a uScrollVelocity uniform on every gallery plane and apply the sin(uv.x*PI) bow — the float/tunnel modes will visibly 'flex' as you move, the core seamless upgrade. Add the cursor-circle grain only on the hovered plane so fine-line ink gets a tactile paper-grain shimmer without muddying the linework."
+        },
+        {
+          "name": "Codrops — Motion Hover Effects with Image Distortions + RGB Shift (Three.js)",
+          "url": "https://tympanus.net/codrops/2019/10/21/how-to-create-motion-hover-effects-with-image-distortions-using-three-js/",
+          "what": "Computes a plane's velocity (position - previousPosition) and uses it as a distortion offset (×strength). The RGB-shift variant displaces the red and blue channels by separate UV offsets driven by mouse position/velocity, then merges with the original texture. Curved distortion via sin() with UVs ×PI.",
+          "takeaway": "Velocity-as-offset is a tiny, reusable primitive that produces a responsive, alive surface; channel-split RGB shift adds a restrained 'chromatic' luxury accent on hover.",
+          "apply": "On hover over a tattoo plane (Pully already raycasts on pointer), apply a slight RGB-split keyed to pointer velocity — the focused piece gets a delicate shimmer that resolves to crisp when still. Keep strength very low so black/grey linework stays legible; this reads as fashion-editorial polish, not glitch."
+        },
+        {
+          "name": "Lenis (darkroom.engineering) — smooth scroll, CDN/no-bundler",
+          "url": "https://github.com/darkroomengineering/lenis",
+          "what": "Buttery smooth-scroll via UMD CDN (unpkg lenis.min.js + lenis.css). Init `new Lenis()`, drive with rAF or, better, sync to GSAP: lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t*1000)); gsap.ticker.lagSmoothing(0). Recommended buttery settings: lerp ~0.1 (lower = smoother), duration ~1.2, wheelMultiplier 1, custom easing.",
+          "takeaway": "Lenis is the spine of nearly every Awwwards 'seamless' site — it unifies page scroll, WebGL scroll, ScrollTrigger and parallax into ONE loop, killing the disjointed feel of separate scroll handlers. Works fully without a build step.",
+          "apply": "Add Lenis as the master loop. Replace Pully's raw `wheel`-delta travel logic with Lenis scroll → a normalized 0..1 that scrubs the tunnel/float camera; expose Lenis velocity as the uScrollVelocity uniform feeding the bow/grain shaders. This single change makes the whole site (hero, gallery, about, booking) feel like one continuous, weighted surface."
+        },
+        {
+          "name": "GSAP ScrollTrigger — scroll-driven camera scrub (CDN)",
+          "url": "https://gsap.com/docs/v3/Plugins/ScrollTrigger/",
+          "what": "ScrollTrigger links a timeline directly to the scrollbar with `scrub`, so camera position/rotation animate in lockstep with scroll progress (see GreenSock's official Three.js camera CodePen: codepen.io/GreenSock/pen/MWBvQRW). Loadable purely via CDN (gsap.min.js + ScrollTrigger.min.js), pin sections, scrub timelines, snap to labels.",
+          "takeaway": "scrub + pin is how award sites choreograph a 3D camera move to feel like a film that you scrub frame-by-frame — deterministic, reversible, perfectly synced to the page.",
+          "apply": "Pin the gallery section and drive Pully's camera travel (and the float→wall→tunnel transitions) with a scrubbed ScrollTrigger timeline instead of auto-drift + wheel. Scrolling the page then becomes a cinematic dolly through the tattoo space; mode switches can be timeline labels with snap, so each mode 'locks in' cleanly."
+        },
+        {
+          "name": "Three.js official — Depth-of-Field / BokehPass via importmap addons",
+          "url": "https://threejs.org/examples/webgl_postprocessing_dof.html",
+          "what": "EffectComposer + RenderPass + BokehPass imported from 'three/addons/postprocessing/...' using the exact importmap pattern Pully already uses (no bundler). BokehPass mimics camera focus, blurring objects off the focal plane; focus/aperture/maxblur are tweakable uniforms.",
+          "takeaway": "Cinematic depth-of-field is the cheapest way to make a WebGL scene look 'expensive' and photographed rather than rendered — and it needs zero new tooling on top of Pully's importmap.",
+          "apply": "Wrap Pully's render() in an EffectComposer and add a BokehPass focused on the centered/hovered tattoo, softly blurring the float-cloud depth and tunnel distance. Keep aperture subtle (quiet luxury). Lerp the focus distance toward the active plane so attention always falls on one piece — perfect for showcasing individual fine-line designs."
+        },
+        {
+          "name": "Lusion — WebGL Scroll-Sync demo (benchmark)",
+          "url": "https://webgl-scroll-sync.lusion.co/",
+          "what": "A reference-grade example of perfectly synchronized scroll + WebGL: DOM and 3D move as one, with inertia, momentum and depth that never desync. Studio-quality 'seamless' bar to aim at.",
+          "takeaway": "The defining quality of top WebGL portfolios isn't more effects — it's that scroll, camera, and content share one inertial system so nothing ever feels bolted on.",
+          "apply": "Use as the north-star feel check for Pully: after wiring Lenis + ScrollTrigger scrub + velocity uniforms, the test is whether hero → gallery → about scrolls as one continuous weighted surface. If any section's motion feels independent, route it through the same Lenis loop."
+        },
+        {
+          "name": "THREE.LoadingManager — premium in-WebGL intro loader/reveal",
+          "url": "https://threejs.org/docs/pages/LoadingManager.html",
+          "what": "LoadingManager exposes onStart/onProgress/onLoad/onError to track every texture. Best-practice reveal: keep the scene black, draw a full-screen black quad over the render, and on onLoad tween its opacity uniform to 0 with GSAP — the fade happens inside WebGL so there's no DOM flash or pop.",
+          "takeaway": "A controlled, fade-from-black reveal tied to real asset progress is the signature 'considered' first impression of award sites; doing it in-shader avoids the cheap-feeling DOM overlay flicker.",
+          "apply": "Pully loads tattoo textures with TextureLoader (currently fire-and-forget). Route them through a LoadingManager, show a minimal centered progress mark (Cormorant numerals on ivory), and on completion GSAP-fade an in-WebGL black quad to unveil the gallery — replacing the current galleryLoading DOM toggle with a seamless premium intro."
+        }
+      ]
+    }
+  ]
+}

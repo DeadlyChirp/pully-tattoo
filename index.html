@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PULLY — fine-line tattoo, hà nội</title>
+  <meta name="description" content="PULLY — fine-line, minimal tattoo art. Private studio, Hà Nội. By appointment." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0a09'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-size='16' fill='%23ece8e0' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@400;500;600&family=Be+Vietnam+Pro:wght@200;300;400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=4" />
+  <script src="./assets/js/config.js"></script>
+</head>
+<body>
+
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#top" class="nav__brand">PULLY</a>
+      <nav class="nav__links" id="navLinks">
+        <a href="#gallery">galerie</a>
+        <a href="#about">studio</a>
+        <a href="#booking" class="nav__cta">request</a>
+      </nav>
+      <button class="nav__burger" id="navBurger" aria-label="menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- hero -->
+  <section class="hero" id="top">
+    <div class="hero__inner reveal" style="display:flex;flex-direction:column;align-items:center;gap:1.4rem">
+      <p class="eyebrow">fine-line tattoo — hà nội</p>
+      <h1 class="hero__title">PULLY</h1>
+      <p class="hero__tag">by appointment · jun – jul</p>
+      <div class="hero__cta">
+        <a href="#gallery" class="link">works</a>
+        <a href="#booking" class="link">request a session</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- gallery: single stark viewer -->
+  <section class="gallery" id="gallery">
+    <div class="g-top">
+      <h2>galerie</h2>
+      <span class="eyebrow" id="gCount">—</span>
+    </div>
+    <div class="viewer">
+      <button class="v-arrow v-prev" id="vPrev" aria-label="previous">prev</button>
+      <figure class="v-frame"><img id="vImg" alt="" draggable="false" /></figure>
+      <button class="v-arrow v-next" id="vNext" aria-label="next">next</button>
+    </div>
+    <div class="v-bar">
+      <div><span class="v-title" id="vTitle">—</span><span class="v-sub" id="vSub"></span></div>
+      <span class="v-count" id="vCount">—</span>
+    </div>
+    <div class="v-cats" id="vCats"></div>
+  </section>
+
+  <!-- studio -->
+  <section class="about" id="about">
+    <p class="eyebrow reveal">the studio</p>
+    <div class="reveal">
+      <p class="about__lead">fine-line, minimal tattoo work — botanical, lettering and quiet symbols. a private studio, by appointment only.</p>
+      <p class="about__addr">2 ngõ 106 lê trọng tấn<br />thanh xuân · hà nội · việt nam</p>
+    </div>
+  </section>
+
+  <!-- booking -->
+  <section class="booking" id="booking">
+    <div class="booking__head reveal">
+      <p class="eyebrow">appointments</p>
+      <h2>request a session</h2>
+      <p class="booking__lede">pick a day, tell me about your idea — i'll reply by email to confirm.</p>
+    </div>
+    <div class="booking__grid">
+      <div class="cal reveal" id="calendar">
+        <div class="cal__bar">
+          <button class="cal__nav" id="calPrev" aria-label="previous month">‹</button>
+          <span class="cal__month" id="calMonth">—</span>
+          <button class="cal__nav" id="calNext" aria-label="next month">›</button>
+        </div>
+        <div class="cal__dow"><span>mon</span><span>tue</span><span>wed</span><span>thu</span><span>fri</span><span>sat</span><span>sun</span></div>
+        <div class="cal__grid" id="calGrid"></div>
+        <div class="cal__legend"><span>open</span><span>selected</span><span>unavailable</span></div>
+      </div>
+
+      <form class="form reveal" id="bookingForm" novalidate>
+        <div class="field"><label for="f-name">name</label><input id="f-name" name="name" type="text" required autocomplete="name" /></div>
+        <div class="field-row">
+          <div class="field"><label for="f-email">email</label><input id="f-email" name="email" type="email" required autocomplete="email" /></div>
+          <div class="field"><label for="f-contact">instagram / phone</label><input id="f-contact" name="contact" type="text" /></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="f-placement">placement</label>
+            <select id="f-placement" name="placement"><option value="">—</option><option>inner forearm</option><option>outer forearm</option><option>wrist</option><option>ankle</option><option>ribs</option><option>shoulder</option><option>spine</option><option>sternum</option><option>behind ear / neck</option><option>other</option></select>
+          </div>
+          <div class="field"><label for="f-size">approx. size</label>
+            <select id="f-size" name="size"><option value="">—</option><option>small — under 5 cm</option><option>medium — 5–12 cm</option><option>large — over 12 cm</option></select>
+          </div>
+        </div>
+        <div class="field"><label for="f-date">preferred date</label><input id="f-date" name="date" type="text" readonly placeholder="pick a day on the calendar" /></div>
+        <div class="field"><label for="f-idea">your idea</label><textarea id="f-idea" name="idea" rows="3" placeholder="subject, mood, references…"></textarea></div>
+        <label class="consent"><input type="checkbox" id="f-consent" required /><span>i'm 18+ and happy to be contacted by email about this request.</span></label>
+        <button type="submit" class="btn btn--full" id="bookSubmit">send request</button>
+        <p class="form__alt">or <a id="dmLink" href="#" target="_blank" rel="noopener">message on instagram</a></p>
+        <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__col">pully — fine-line tattoo<br />hà nội, việt nam</div>
+    <div class="footer__col">2 ngõ 106 lê trọng tấn,<br />thanh xuân, hà nội</div>
+    <div class="footer__col"><a id="footIg" href="#" target="_blank" rel="noopener">instagram</a><br /><a id="footBeacons" href="#" target="_blank" rel="noopener">all links</a></div>
+    <p class="footer__fine">© <span id="year"></span> pully · by appointment</p>
+  </footer>
+
+  <!-- lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox__close" id="lbClose" aria-label="close">close</button>
+    <div class="lightbox__inner">
+      <div class="lightbox__img" id="lbImg"></div>
+      <div class="lightbox__meta">
+        <p class="eyebrow" id="lbCat">—</p>
+        <h3 id="lbTitle">—</h3>
+        <p class="lightbox__place" id="lbPlace">—</p>
+        <a href="#booking" class="link" id="lbBook">request similar</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./assets/js/main.js"></script>
+</body>
+</html>
