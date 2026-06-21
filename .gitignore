@@ -12,7 +12,6 @@ raw/
 tools/_opt/
 tools/_thumbs/
 tools/_sheets/
-assets/img/thumb/
 
 # ── tooling / local ──────────────────────────────────────
 node_modules/
@@ -24,6 +23,7 @@ var-*.jpeg
 new-*.jpeg
 m-*.jpeg
 ro-*.jpeg
+ex*.jpeg
 _v*.html
 
 # ── os cruft ─────────────────────────────────────────────

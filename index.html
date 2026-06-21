@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@400;500;600&family=Be+Vietnam+Pro:wght@200;300;400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./assets/css/styles.css?v=4" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=5" />
   <script src="./assets/js/config.js"></script>
 </head>
 <body>
@@ -45,16 +45,19 @@
       <h2>galerie</h2>
       <span class="eyebrow" id="gCount">—</span>
     </div>
-    <div class="viewer">
-      <button class="v-arrow v-prev" id="vPrev" aria-label="previous">prev</button>
-      <figure class="v-frame"><img id="vImg" alt="" draggable="false" /></figure>
-      <button class="v-arrow v-next" id="vNext" aria-label="next">next</button>
-    </div>
-    <div class="v-bar">
-      <div><span class="v-title" id="vTitle">—</span><span class="v-sub" id="vSub"></span></div>
-      <span class="v-count" id="vCount">—</span>
-    </div>
     <div class="v-cats" id="vCats"></div>
+    <div class="exhibit">
+      <figure class="ex-frame"><img id="vImg" alt="" draggable="false" /></figure>
+      <div class="ex-meta">
+        <span class="ex-no" id="vCount">—</span>
+        <div class="ex-meta__btm">
+          <h3 class="ex-title" id="vTitle">—</h3>
+          <span class="ex-sub" id="vSub"></span>
+          <div class="ex-nav"><button id="vPrev" aria-label="previous">← prev</button><button id="vNext" aria-label="next">next →</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="ex-strip" id="vStrip"></div>
   </section>
 
   <!-- studio -->
