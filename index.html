@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PULLY — fine-line tattoo, hà nội</title>
   <meta name="description" content="PULLY — fine-line, minimal tattoo art. Private studio, Hà Nội. By appointment." />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0a09'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-size='16' fill='%23ece8e0' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0a08'/%3E%3Ctext x='16' y='24' font-family='Georgia,serif' font-style='italic' font-size='22' fill='%23ddd7cb' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@400;500;600&family=Be+Vietnam+Pro:wght@200;300;400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./assets/css/styles.css?v=5" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340..460;1,9..144,360&family=Hanken+Grotesk:wght@350;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=6" />
   <script src="./assets/js/config.js"></script>
 </head>
 <body>
+
+  <div id="loader" class="loader"><span class="loader__count" id="loaderCount">000</span></div>
 
   <header class="nav" id="nav">
     <div class="nav__inner">
@@ -28,18 +30,18 @@
 
   <!-- hero -->
   <section class="hero" id="top">
-    <div class="hero__inner reveal" style="display:flex;flex-direction:column;align-items:center;gap:1.4rem">
-      <p class="eyebrow">fine-line tattoo — hà nội</p>
+    <div class="hero__inner">
+      <p class="eyebrow hero__eye">fine-line tattoo — hà nội</p>
       <h1 class="hero__title">PULLY</h1>
       <p class="hero__tag">by appointment · jun – jul</p>
       <div class="hero__cta">
-        <a href="#gallery" class="link">works</a>
+        <a href="#gallery" class="link">galerie</a>
         <a href="#booking" class="link">request a session</a>
       </div>
     </div>
   </section>
 
-  <!-- gallery: single stark viewer -->
+  <!-- galerie: exhibition -->
   <section class="gallery" id="gallery">
     <div class="g-top">
       <h2>galerie</h2>
@@ -47,7 +49,10 @@
     </div>
     <div class="v-cats" id="vCats"></div>
     <div class="exhibit">
-      <figure class="ex-frame"><img id="vImg" alt="" draggable="false" /></figure>
+      <figure class="ex-frame">
+        <img class="ex-img is-active" id="vImgA" alt="" draggable="false" />
+        <img class="ex-img" id="vImgB" alt="" draggable="false" />
+      </figure>
       <div class="ex-meta">
         <span class="ex-no" id="vCount">—</span>
         <div class="ex-meta__btm">
@@ -123,7 +128,7 @@
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <button class="lightbox__close" id="lbClose" aria-label="close">close</button>
     <div class="lightbox__inner">
-      <div class="lightbox__img" id="lbImg"></div>
+      <img class="lightbox__img" id="lbImg" alt="" />
       <div class="lightbox__meta">
         <p class="eyebrow" id="lbCat">—</p>
         <h3 id="lbTitle">—</h3>
@@ -133,6 +138,12 @@
     </div>
   </div>
 
+  <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label" id="cursorLabel"></span></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
   <script type="module" src="./assets/js/main.js"></script>
 </body>
 </html>
