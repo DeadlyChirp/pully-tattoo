@@ -1,149 +1,142 @@
-/* Galerie — THE SPREAD: a curated exhibition wall of 6 large plates.
-   Click a plate → it morphs (GSAP Flip) into a focused reading plate.
-   Word-row filter re-hangs the wall; prev/next + dot-rail page the spreads.
-   Reuses the lightbox (full detail), the 305 complete index, and the folio. */
+/* Galerie — THE SKETCHBOOK.
+   A warm plate-book you leaf through (StPageFlip): cover → per-piece spread
+   (verso notes / recto plate) → colophon. Tap a plate → full lightbox.
+   The word-row filter re-paginates the book and re-sorts the 305 index.
+   Falls back to a quiet paper grid with no JS / reduced-motion.
+   (Engine = page-flip@2.0.7, global St.PageFlip — restyled entirely in CSS.) */
 
 const thumb = (src) => src.replace("/assets/img/", "/assets/img/thumb/");
 const pad2 = (n) => String(n).padStart(2, "0");
 const pad3 = (n) => String(n).padStart(3, "0");
-const chunk = (a, n) => a.reduce((o, _, i) => (i % n ? o : [...o, a.slice(i, i + n)]), []);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const G = window.gsap;
-const F = window.Flip;
 const anim = () => document.documentElement.classList.contains("anim") && !!G;
 
 export async function initGallery({ items, onSelect } = {}) {
-  const wall = document.getElementById("spread");
-  if (!wall) return;
+  const wrap = document.getElementById("bookWrap");
+  if (!wrap) return;
+  let book;
+  const freshBook = () => {
+    wrap.innerHTML = "";
+    book = document.createElement("div");
+    book.className = "book";
+    book.setAttribute("aria-label", "pully sketchbook — drag a corner to turn the page");
+    wrap.appendChild(book);
+    return book;
+  };
   const all = items || ((await (await fetch("./data/images.json")).json()).items || []);
   if (!all.length) return;
   const featured = all.filter(x => x.featured);
 
-  const ghost = document.getElementById("spGhost");
   const catsEl = document.getElementById("vCats");
-  const railEl = document.getElementById("spRail");
-  const countEl = document.getElementById("spCount");
   const gCount = document.getElementById("gCount");
-  const scrim = document.getElementById("spScrim");
-  const cap = document.getElementById("spCap");
+  const countEl = document.getElementById("bookCount");
+  const railFill = document.getElementById("bookRailFill");
+  const btnPrev = document.getElementById("bookPrev");
+  const btnNext = document.getElementById("bookNext");
 
   const gidx = (it) => all.indexOf(it);
   const select = (it) => onSelect?.(Object.assign({}, it, { no: gidx(it) + 1, total: all.length }));
 
   let list = featured.length ? featured : all;
-  let spreads = chunk(list, 6);
-  let sp = 0;
-  const nSpreads = () => spreads.length;
+  let pf = null, pfState = "read";
 
-  const plates = () => [...wall.querySelectorAll(".plate")];
+  /* ── page builders ── */
+  function coverPage(n) {
+    const d = document.createElement("div");
+    d.className = "page page--cover"; d.setAttribute("data-density", "hard");
+    d.innerHTML = `<span class="page__ghost">${pad2(n)}</span><div class="page__pad"><span class="page__brand">pully</span><span class="page__sub">a sketchbook</span><span class="page__edition">plates 001–${pad3(n)} · <span class="vi">hà nội</span></span></div>`;
+    return d;
+  }
+  function notesPage(it, i, total) {
+    const d = document.createElement("div");
+    d.className = "page page--verso";
+    const ink = (it.palette === "black" || !it.palette) ? "black" : "with colour";
+    d.innerHTML = `<div class="page__pad">
+      <span class="page__idx">№ ${pad3(i + 1)} / ${pad3(total)}</span>
+      <h3 class="page__title">${esc((it.title || "untitled").toLowerCase())}</h3>
+      <div class="page__meta">
+        <div>placement<b>${esc(it.placement || "—")}</b></div>
+        <div>category<b>${esc((it.category || "—").toLowerCase())}</b></div>
+        <div>ink<b>${ink}</b></div>
+      </div>
+      <span class="page__open"><a class="link" href="#" data-open="1">open full plate →</a></span>
+    </div>`;
+    d.querySelector("[data-open]").addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); if (pfState === "read") select(it); });
+    return d;
+  }
+  function platePage(it) {
+    const d = document.createElement("div");
+    d.className = "page page--recto";
+    d.innerHTML = `<figure class="page__plate"><div class="page__win"><img data-src="${thumb(it.src)}" alt="${esc(it.title || "")}" draggable="false" decoding="async"></div></figure><span class="page__no">pl. ${pad3(gidx(it) + 1)}</span>`;
+    const fig = d.querySelector(".page__plate");
+    fig.addEventListener("click", (e) => { e.stopPropagation(); if (pfState === "read") select(it); });
+    fig.addEventListener("mousedown", (e) => e.stopPropagation());
+    fig.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
+    return d;
+  }
+  function creditsPage() {
+    const d = document.createElement("div");
+    d.className = "page page--back"; d.setAttribute("data-density", "hard");
+    d.innerHTML = `<div class="page__pad"><span class="shead__kick">colophon</span><span class="page__sig">pully</span><div class="page__meta"><div>tattooed &amp; drawn by<b>pully</b></div><div class="vi">located<b class="vi">hà nội, vn</b></div><div>working<b>by appointment</b></div></div></div>`;
+    return d;
+  }
+  function linksPage() {
+    const d = document.createElement("div");
+    d.className = "page page--back"; d.setAttribute("data-density", "hard");
+    d.innerHTML = `<div class="page__pad"><span class="shead__kick">the archive</span><a class="link" href="#index">complete index — 305 plates →</a><a class="link" href="#booking">book a sitting →</a><span class="page__edition">fin</span></div>`;
+    return d;
+  }
+  function buildPages(l) {
+    const pages = [coverPage(l.length)];
+    l.forEach((it, i) => { pages.push(notesPage(it, i, l.length)); pages.push(platePage(it)); });
+    pages.push(creditsPage(), linksPage());
+    return pages;
+  }
 
-  function buildPlate(it, k) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "plate" + (k === 0 ? " is-anchor" : "");
-    b.style.gridArea = "abcdef"[k] || "f";
-    b.setAttribute("aria-label", (it.title || "plate").toLowerCase());
-    b.innerHTML = `<img src="${thumb(it.src)}" loading="lazy" alt="" draggable="false"><span class="plate__no">${pad3(gidx(it) + 1)}</span>`;
-    b.addEventListener("pointerenter", () => updateFolio(gidx(it) + 1, all.length));
-    b.addEventListener("click", () => openFocus(b, it));
-    return b;
-  }
-  function mountSpread(n) {
-    plates().forEach(p => p.remove());
-    wall.classList.remove("sp--A", "sp--B");
-    wall.classList.add(n % 2 === 0 ? "sp--A" : "sp--B");
-    (spreads[n] || []).forEach((it, k) => wall.appendChild(buildPlate(it, k)));
-    if (ghost) ghost.textContent = pad2(n + 1);
-    if (countEl) countEl.textContent = `spread ${pad2(n + 1)} / ${pad2(nSpreads())}`;
-    railEl?.querySelectorAll(".sp__dot").forEach((d, i) => d.classList.toggle("on", i === n));
-  }
-  // developing-plate entrance (first view only)
-  function entrance() {
-    if (!anim()) return;
-    const imgs = plates().map(p => p.querySelector("img"));
-    G.set(imgs, { clipPath: "inset(100% 0 0 0)", scale: 1.06 });
-    G.set(ghost, { yPercent: 40, opacity: 0 });
-    window.ScrollTrigger?.create({
-      trigger: wall, start: "top 82%", once: true, onEnter: () => {
-        G.to(imgs, { clipPath: "inset(0% 0 0 0)", scale: 1, duration: .85, ease: "power3.out", stagger: .07 });
-        G.to(ghost, { yPercent: 0, opacity: .06, duration: 1, ease: "power3.out" });
-      }
-    });
-  }
-  // page to another spread (prev/next, dot, filter) — a soft crossfade re-hang
-  function hangSpread(n) {
-    sp = n;
-    if (!anim()) { mountSpread(n); return; }
-    const old = plates();
-    G.to(old, {
-      opacity: 0, scale: .96, y: 8, duration: .32, ease: "power2.in", stagger: .03,
-      onComplete: () => {
-        mountSpread(n);
-        G.fromTo(plates(), { opacity: 0, scale: .96, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: .5, ease: "power2.out", stagger: .05 });
-        G.fromTo(ghost, { opacity: 0, yPercent: 20 }, { opacity: .06, yPercent: 0, duration: .6, ease: "power2.out" });
-        window.ScrollTrigger?.refresh();
-      }
-    });
-  }
-
-  /* ── Flip focus (the wow) ── */
-  let openPlate = null, dimmed = [], titleSplit = null, isOpen = false;
-  function openFocus(plate, it) {
-    if (isOpen) return;
-    isOpen = true; openPlate = plate;
-    window.lenis?.stop();
-    document.getElementById("spCapNo").textContent = `№ ${pad3(gidx(it) + 1)} / ${pad3(all.length)}`;
-    document.getElementById("spCapCat").textContent = (it.category || "").toLowerCase();
-    const titleEl = document.getElementById("spCapTitle");
-    titleEl.textContent = (it.title || "untitled").toLowerCase();
-    document.getElementById("spCapPlace").textContent = it.placement ? `placement — ${it.placement}` : "";
-    document.getElementById("spCapFull").onclick = (e) => { e.preventDefault(); closeFocus(); select(it); };
-    updateFolio(gidx(it) + 1, all.length);
-    scrim.onclick = closeFocus;
-
-    dimmed = plates().filter(p => p !== plate);
-    if (anim() && F) {
-      const state = F.getState(plate, { props: "borderRadius,boxShadow" });
-      plate.classList.add("is-open");
-      F.from(state, { absolute: true, scale: true, duration: .72, ease: "expo.inOut" });
-      G.to(dimmed, { opacity: .12, filter: "blur(3px)", scale: .985, duration: .5, ease: "power2.out" });
-      scrim.classList.add("on");
-      cap.classList.add("on");
-      titleSplit?.revert?.();
-      if (window.SplitText) { titleSplit = new window.SplitText(titleEl, { type: "lines", mask: "lines" }); G.from(titleSplit.lines, { yPercent: 110, stagger: .06, duration: .7, ease: "power2.out", delay: .34 }); }
-    } else {
-      plate.classList.add("is-open"); scrim.classList.add("on"); cap.classList.add("on");
+  const pieceAtPage = (p) => (p < 1 ? null : list[Math.floor((p - 1) / 2)] || null);
+  function lazyAround(p) {
+    const ps = book.querySelectorAll(".page");
+    for (let k = Math.max(0, p - 2); k <= Math.min(ps.length - 1, p + 3); k++) {
+      const im = ps[k]?.querySelector("img[data-src]");
+      if (im) { im.src = im.dataset.src; im.removeAttribute("data-src"); }
     }
   }
-  function closeFocus() {
-    if (!isOpen) return;
-    isOpen = false;
-    cap.classList.remove("on"); scrim.classList.remove("on");
-    titleSplit?.revert?.(); titleSplit = null;
-    if (dimmed.length && G) G.to(dimmed, { opacity: 1, filter: "blur(0px)", scale: 1, duration: .4, ease: "power2.out" });
-    const plate = openPlate;
-    if (anim() && F && plate) {
-      const state = F.getState(plate, { props: "borderRadius,boxShadow" });
-      plate.classList.remove("is-open");
-      F.from(state, { absolute: true, scale: true, duration: .6, ease: "expo.inOut" });
-    } else { plate?.classList.remove("is-open"); }
-    window.lenis?.start();
-    openPlate = null;
-  }
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && isOpen) closeFocus(); });
+  function loadAllThumbs() { book.querySelectorAll("img[data-src]").forEach(im => { im.src = im.dataset.src; im.removeAttribute("data-src"); }); }
 
-  /* ── dot rail + paging ── */
-  function buildRail() {
-    if (!railEl) return;
-    railEl.innerHTML = "";
-    spreads.forEach((_, k) => {
-      const d = document.createElement("button");
-      d.type = "button"; d.className = "sp__dot" + (k === sp ? " on" : ""); d.setAttribute("aria-label", `spread ${k + 1}`);
-      d.addEventListener("click", () => { if (k !== sp) hangSpread(k); });
-      railEl.appendChild(d);
-    });
+  function updateBookUI() {
+    const total = pf ? pf.getPageCount() : book.querySelectorAll(".page").length;
+    const cur = pf ? pf.getCurrentPageIndex() : 0;
+    const it = pieceAtPage(cur);
+    if (countEl) countEl.textContent = it ? `plate ${pad2(list.indexOf(it) + 1)} / ${pad2(list.length)}` : (cur === 0 ? "cover" : "colophon");
+    if (railFill) railFill.style.width = total > 1 ? `${(cur / (total - 1)) * 100}%` : "0%";
+    if (btnPrev) btnPrev.disabled = cur <= 0;
+    if (btnNext) btnNext.disabled = cur >= total - 1;
+    if (it) updateFolio(gidx(it) + 1, all.length);
   }
-  document.getElementById("spPrev").addEventListener("click", () => hangSpread((sp - 1 + nSpreads()) % nSpreads()));
-  document.getElementById("spNext").addEventListener("click", () => hangSpread((sp + 1) % nSpreads()));
+
+  function mountBook(l) {
+    if (pf) { try { pf.destroy(); } catch { /* ignore */ } pf = null; }
+    freshBook();
+    buildPages(l).forEach(p => book.appendChild(p));
+
+    if (!(anim() && window.St && window.St.PageFlip)) { loadAllThumbs(); updateBookUI(); return; }
+
+    pf = new window.St.PageFlip(book, {
+      width: 400, height: 545, size: "stretch",
+      minWidth: 260, maxWidth: 620, minHeight: 340, maxHeight: 820,
+      maxShadowOpacity: 0.22, showCover: true, usePortrait: true,
+      mobileScrollSupport: false, drawShadow: true, flippingTime: 780, useMouseEvents: true
+    });
+    pf.loadFromHTML(book.querySelectorAll(".page"));
+    book.classList.add("is-live");
+    lazyAround(0); updateBookUI();
+    pf.on("flip", (e) => { lazyAround(e.data); updateBookUI(); });
+    pf.on("changeState", (e) => { pfState = e.data; if (pfState !== "read") window.lenis?.stop(); else window.lenis?.start(); });
+  }
+
+  btnPrev?.addEventListener("click", () => pf ? pf.flipPrev() : null);
+  btnNext?.addEventListener("click", () => pf ? pf.flipNext() : null);
 
   /* ── filter word-row (reuses #vCats / .v-cat) ── */
   const cats = ["selected", ...[...new Set(all.map(x => x.category))].filter(Boolean)];
@@ -153,7 +146,7 @@ export async function initGallery({ items, onSelect } = {}) {
     b.addEventListener("click", () => {
       catsEl.querySelectorAll(".v-cat").forEach(c => c.classList.toggle("on", c === b));
       list = cat === "selected" ? (featured.length ? featured : all) : all.filter(x => x.category === cat);
-      spreads = chunk(list, 6); sp = 0; buildRail(); hangSpread(0);
+      mountBook(list);
       filterIndex(cat === "selected" ? "all" : cat);
       window.ScrollTrigger?.refresh();
     });
@@ -161,9 +154,7 @@ export async function initGallery({ items, onSelect } = {}) {
   });
   if (gCount) gCount.textContent = `${all.length} works`;
 
-  buildRail();
-  mountSpread(0);
-  entrance();
+  mountBook(list);
 
   /* ── complete index — 305-plate contact sheet ── */
   let idxCells = [];

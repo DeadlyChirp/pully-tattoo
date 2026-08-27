@@ -1,5 +1,5 @@
 /* Orchestration + motion (Lenis + GSAP). Degrades gracefully if libs/reduced-motion. */
-import { initGallery } from "./gallery.js?v=15";
+import { initGallery } from "./gallery.js?v=17";
 import { initBooking } from "./booking.js?v=13";
 
 const cfg = window.PULLY_CONFIG || {};
