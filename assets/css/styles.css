@@ -228,6 +228,10 @@ section{position:relative}
 .cal__cell.selected{background:var(--accent);color:var(--bg);border-color:var(--accent)}
 .cal__cell.today{border-color:var(--ink-2)}
 .cal__legend{display:flex;gap:1.4rem;flex-wrap:wrap;margin-top:1.3rem;font-family:var(--sans);font-size:.54rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.cal__hint{margin-top:1rem;font-size:.78rem;font-weight:300;color:var(--ink-2);min-height:1.2em}
+.cal__hint b{color:var(--ink);font-weight:500}
+.cal__hint button,.cal__hint a{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;padding:0;border-bottom:1px solid var(--line)}
+.cal__hint button:hover,.cal__hint a:hover{border-color:var(--accent)}
 .form{display:flex;flex-direction:column;gap:1.3rem}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .field{display:flex;flex-direction:column;gap:.5rem}
@@ -250,6 +254,13 @@ section{position:relative}
 .form__alt a{color:var(--ink);border-bottom:1px solid var(--line)}
 .form__status{font-size:.88rem;text-align:center;min-height:1.2em;line-height:1.5}
 .form__status.ok{color:var(--ink)} .form__status.err{color:var(--accent)}
+.form.is-sent > *:not(.form__done){display:none}
+.form__done{display:flex;flex-direction:column;gap:.9rem;outline:none;padding:.4rem 0}
+.form__done-k{font-family:var(--sans);font-size:.62rem;font-weight:500;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--accent)}
+.form__done-t{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(1.4rem,3vw,2rem);color:var(--ink);line-height:1.15}
+.form__done-p{font-size:.95rem;font-weight:300;color:var(--ink-2);line-height:1.6;max-width:48ch}
+.form__done-p b{color:var(--ink);font-weight:500}
+.form__done-cta{display:flex;gap:1.8rem;flex-wrap:wrap;margin-top:.6rem}
 
 /* footer */
 .footer{padding:clamp(3rem,7vw,5rem) var(--pad) 2.6rem;max-width:var(--maxw);margin:0 auto;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;align-items:flex-end}
