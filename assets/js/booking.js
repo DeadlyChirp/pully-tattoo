@@ -21,7 +21,10 @@ export async function initBooking() {
 
   document.getElementById("calPrev").addEventListener("click", () => shiftMonth(-1));
   document.getElementById("calNext").addEventListener("click", () => shiftMonth(1));
-  document.getElementById("bookingForm").addEventListener("submit", onSubmit);
+  const form = document.getElementById("bookingForm");
+  form.addEventListener("submit", onSubmit);
+  // clear a field's error as soon as the visitor fixes it
+  form.addEventListener("input", (e) => e.target.closest(".field")?.classList.remove("invalid"));
 }
 
 async function loadAvailability() {
@@ -116,40 +119,65 @@ function selectDay(dISO, d) {
   renderCalendar();
 }
 
+const markField = (id, on) => document.getElementById(id)?.closest(".field")?.classList.toggle("invalid", on);
+const clearInvalid = (form) => form.querySelectorAll(".field.invalid").forEach(f => f.classList.remove("invalid"));
+
 async function onSubmit(e) {
   e.preventDefault();
   const form = e.currentTarget;
   const status = document.getElementById("formStatus");
   const btn = document.getElementById("bookSubmit");
-  status.className = "form__status";
+  status.className = "form__status"; status.textContent = "";
+  clearInvalid(form);
+
+  // honeypot — bots tick it; pretend success, send nothing
+  if (form.botcheck && form.botcheck.checked) return done(status, "Sent! ♡");
 
   const data = Object.fromEntries(new FormData(form).entries());
+  delete data.botcheck;
   data.dateISO = document.getElementById("f-date").dataset.iso || "";
 
-  if (!data.name || !data.email) return fail(status, "Please add your name and email.");
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) return fail(status, "That email looks off — mind checking it?");
-  if (!data.dateISO) return fail(status, "Pick a day on the calendar first.");
+  if (!data.name) { markField("f-name", true); return fail(status, "Please add your name."); }
+  if (!data.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) { markField("f-email", true); return fail(status, "That email looks off — mind checking it?"); }
+  if (!data.dateISO) { markField("f-date", true); return fail(status, "Pick a day on the calendar first."); }
   if (!document.getElementById("f-consent").checked) return fail(status, "Please tick the consent box.");
 
   btn.disabled = true; btn.textContent = "Sending…";
-
   try {
-    if (cfg.apiBase) {
-      const r = await fetch(cfg.apiBase.replace(/\/$/, "") + "/api/book", {
+    if (cfg.web3formsKey) {
+      // No backend needed — Web3Forms emails the studio directly (works on static hosting).
+      const r = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: cfg.web3formsKey,
+          subject: `New tattoo booking — ${data.name} (${data.date || data.dateISO})`,
+          from_name: "PULLY — booking",
+          replyto: data.email,
+          botcheck: false,
+          Name: data.name, Email: data.email, "Instagram / phone": data.contact || "-",
+          "Preferred date": data.date || data.dateISO, Placement: data.placement || "-",
+          Size: data.size || "-", Idea: data.idea || "-"
+        })
+      });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.success) throw new Error(j.message || "Request failed");
+      done(status, "Sent! Pully will reply by email to confirm. ♡");
+      form.reset(); selectedISO = null; renderCalendar();
+    } else if (cfg.apiBase) {
+      const r = await fetch(cfg.apiBase.replace(/\/$/, "") + "/api/book", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)
       });
       if (!r.ok) throw new Error("Request failed");
-      done(status, "Sent! She'll reply by email to confirm. ♡");
+      done(status, "Sent! Pully will reply by email to confirm. ♡");
       form.reset(); selectedISO = null; renderCalendar();
     } else {
-      // No backend yet → open the user's email client with everything pre-filled.
+      // Nothing configured yet → open the visitor's email client, pre-filled.
       mailtoFallback(data);
       done(status, "Opening your email app — just hit send to finish. ♡");
     }
   } catch (err) {
-    fail(status, "Couldn't send just now. Please DM on Instagram instead.");
+    fail(status, "Couldn't send just now — please DM on Instagram and I'll sort it. ♡");
   } finally {
     btn.disabled = false; btn.textContent = "Send request";
   }

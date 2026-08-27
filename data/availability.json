@@ -1,14 +1,16 @@
 {
-  "_note": "Static availability fallback used until the Cloudflare Worker is live. The Worker's /api/availability will replace this. Dates are ISO yyyy-mm-dd.",
-  "bookingFrom": "2026-06-20",
-  "bookingTo": "2026-07-31",
+  "_note": "Static availability fallback used until the Cloudflare Worker is live. The Worker's /api/availability will replace this. Dates are ISO yyyy-mm-dd. Set bookingFrom/bookingTo to the real open window; closedWeekdays uses 1=Mon..7=Sun; blocked lists individual unavailable days.",
+  "bookingFrom": "2026-09-01",
+  "bookingTo": "2026-10-31",
   "closedWeekdays": [1],
   "blocked": [
-    "2026-06-23",
-    "2026-06-27",
-    "2026-07-04",
-    "2026-07-11",
-    "2026-07-18",
-    "2026-07-25"
+    "2026-09-05",
+    "2026-09-12",
+    "2026-09-19",
+    "2026-09-26",
+    "2026-10-03",
+    "2026-10-10",
+    "2026-10-17",
+    "2026-10-24"
   ]
 }
