@@ -1,6 +1,7 @@
 /* Orchestration + motion (Lenis + GSAP). Degrades gracefully if libs/reduced-motion. */
 import { initGallery } from "./gallery.js?v=17";
 import { initBooking } from "./booking.js?v=13";
+import { initInkCursor, revealPlate } from "./ink.js?v=5";
 
 const cfg = window.PULLY_CONFIG || {};
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -51,9 +52,10 @@ function openLightbox(item) {
   const im = document.getElementById("lbImg");
   im.src = item.src; im.alt = item.title || "";
   lb.classList.add("open"); lb.setAttribute("aria-hidden", "false");
+  if (animate) requestAnimationFrame(() => revealPlate(item.src));
   lenis?.stop();
 }
-function closeLightbox() { lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true"); lenis?.start(); }
+function closeLightbox() { lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true"); const fx = document.getElementById("lbFx"); if (fx) fx.classList.remove("on"); const li = document.getElementById("lbImg"); if (li) li.style.opacity = ""; lenis?.start(); }
 document.getElementById("lbClose").addEventListener("click", closeLightbox);
 document.getElementById("lbBook").addEventListener("click", closeLightbox);
 lb.addEventListener("click", (e) => { if (e.target === lb) closeLightbox(); });
@@ -186,29 +188,8 @@ function buildFloatStage(items) {
   objs.forEach(o => G.to(o.el, { yPercent: -o.depth * 20, ease: "none", scrollTrigger: { trigger: "#top", start: "top top", end: "bottom top", scrub: true } }));
 }
 
-/* ── loupe cursor (event-delegated) ────────────────────── */
-if (animate && finePointer) {
-  document.documentElement.classList.add("cursor-on");
-  const cur = document.getElementById("cursor"), label = document.getElementById("cursorLabel");
-  const folioEl = document.getElementById("folio");
-  cur.style.display = "flex";
-  const xTo = G.quickTo(cur, "x", { duration: .4, ease: "power3" }), yTo = G.quickTo(cur, "y", { duration: .4, ease: "power3" });
-  window.addEventListener("pointermove", (e) => { xTo(e.clientX); yTo(e.clientY); });
-  const plateNo = () => (folioEl?.textContent.match(/\d+/) || [""])[0];
-  function tagFor(t) {
-    if (t.closest(".floatie")) return "drag";
-    if (t.closest("#vImgA, #vImgB")) return `view ${plateNo() ? "№" + plateNo() : ""}`.trim();
-    if (t.closest(".work, .ex-thumb, .icell")) return "view";
-    if (t.closest("a, button")) return "open →";
-    return null;
-  }
-  let hot = false;
-  document.addEventListener("pointerover", (e) => {
-    const tag = tagFor(e.target);
-    if (tag !== null) { cur.classList.add("is-hover"); label.textContent = tag; hot = true; }
-    else if (hot) { cur.classList.remove("is-hover"); label.textContent = ""; hot = false; }
-  });
-}
+/* ── the ink — cursor trail ────────────────────────────── */
+if (animate) initInkCursor();
 
 /* ── init ──────────────────────────────────────────────── */
 initBooking();
