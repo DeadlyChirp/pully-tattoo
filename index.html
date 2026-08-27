@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..700;1,300..500&family=Fraunces:ital,opsz,wght@1,9..144,340..460&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./assets/css/styles.css?v=14" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=15" />
   <link rel="preload" as="image" href="./assets/img/3805425669531497842.jpg" />
   <script>try{var t=localStorage.getItem("pully_theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
   <script src="./assets/js/config.js"></script>
@@ -64,7 +64,7 @@
     </div>
   </section>
 
-  <!-- galerie — work-list ↔ plate ↔ odometer -->
+  <!-- galerie — the spread (exhibition wall + Flip focus) -->
   <section class="gallery" id="gallery">
     <div class="shead">
       <span class="shead__kick">the plates — <span id="gCount">305 works</span></span>
@@ -72,19 +72,24 @@
       <h2 class="shead__title"><em>galerie</em></h2>
     </div>
     <div class="v-cats" id="vCats"></div>
-    <div class="exhibit">
-      <figure class="ex-frame mat">
-        <div class="mat__win">
-          <img class="ex-img is-active" id="vImgA" alt="" draggable="false" />
-          <img class="ex-img" id="vImgB" alt="" draggable="false" />
-        </div>
-        <div class="ex-odo" id="exOdo" aria-hidden="true"><span class="roll" id="bigNum">01</span></div>
-      </figure>
-      <div class="work-list" id="workList" role="listbox" aria-label="selected works"></div>
+    <div class="spread sp--A" id="spread"><span class="sp__ghost" id="spGhost" aria-hidden="true">01</span></div>
+    <div class="sp__bar">
+      <div class="sp__nav"><button id="spPrev" type="button">‹ prev spread</button><button id="spNext" type="button">next spread ›</button></div>
+      <span class="sp__count" id="spCount">spread 01 / 07</span>
+      <a class="link sp__index-link" href="#index">complete index — 305 plates →</a>
     </div>
-    <div class="ex-nav"><button id="vPrev" aria-label="previous">← prev</button><button id="vNext" aria-label="next">next →</button></div>
-    <div class="ex-strip" id="vStrip"></div>
+    <nav class="sp__rail" id="spRail" aria-label="spreads"></nav>
   </section>
+
+  <!-- galerie focus (Flip) -->
+  <div class="focus-scrim" id="spScrim" aria-hidden="true"></div>
+  <aside class="focus__cap" id="spCap" aria-hidden="true">
+    <span class="focus__no" id="spCapNo"></span>
+    <p class="micro" id="spCapCat"></p>
+    <h3 class="focus__title" id="spCapTitle"></h3>
+    <p class="focus__place" id="spCapPlace"></p>
+    <a class="link" id="spCapFull" href="#">open full plate →</a>
+  </aside>
 
   <!-- colophon — the hand -->
   <section class="colophon" id="colophon">
@@ -256,7 +261,8 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Draggable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/InertiaPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
-  <script type="module" src="./assets/js/main.js?v=14"></script>
+  <script type="module" src="./assets/js/main.js?v=15"></script>
 </body>
 </html>

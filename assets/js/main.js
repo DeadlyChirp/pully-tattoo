@@ -1,5 +1,5 @@
 /* Orchestration + motion (Lenis + GSAP). Degrades gracefully if libs/reduced-motion. */
-import { initGallery } from "./gallery.js?v=12";
+import { initGallery } from "./gallery.js?v=15";
 import { initBooking } from "./booking.js?v=13";
 
 const cfg = window.PULLY_CONFIG || {};
@@ -66,7 +66,7 @@ const dataReady = fetch("./data/images.json").then(r => r.json()).then(d => d.it
 const loader = document.getElementById("loader");
 
 if (animate) {
-  [window.ScrollTrigger, window.Draggable, window.InertiaPlugin].filter(Boolean).forEach(p => G.registerPlugin(p));
+  [window.ScrollTrigger, window.Draggable, window.InertiaPlugin, window.Flip].filter(Boolean).forEach(p => G.registerPlugin(p));
   document.documentElement.classList.add("anim");
 
   lenis = new window.Lenis({

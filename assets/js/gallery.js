@@ -1,115 +1,159 @@
-/* Galerie — work-list ↔ central plate ↔ odometer index.
-   Hover a work to preview it, click to open. prev/next · drag · wheel · keys · filter.
-   Plus the back-of-book COMPLETE INDEX (305-plate contact sheet, live re-sort). */
+/* Galerie — THE SPREAD: a curated exhibition wall of 6 large plates.
+   Click a plate → it morphs (GSAP Flip) into a focused reading plate.
+   Word-row filter re-hangs the wall; prev/next + dot-rail page the spreads.
+   Reuses the lightbox (full detail), the 305 complete index, and the folio. */
 
 const thumb = (src) => src.replace("/assets/img/", "/assets/img/thumb/");
 const pad2 = (n) => String(n).padStart(2, "0");
 const pad3 = (n) => String(n).padStart(3, "0");
+const chunk = (a, n) => a.reduce((o, _, i) => (i % n ? o : [...o, a.slice(i, i + n)]), []);
 const G = window.gsap;
+const F = window.Flip;
 const anim = () => document.documentElement.classList.contains("anim") && !!G;
-const grade = "saturate(1.04) contrast(1.02) brightness(1.005)";
 
 export async function initGallery({ items, onSelect } = {}) {
-  const imgA = document.getElementById("vImgA");
-  const imgB = document.getElementById("vImgB");
-  if (!imgA) return;
-  const all = items || (await (await fetch("./data/images.json")).json()).items || [];
+  const wall = document.getElementById("spread");
+  if (!wall) return;
+  const all = items || ((await (await fetch("./data/images.json")).json()).items || []);
   if (!all.length) return;
   const featured = all.filter(x => x.featured);
 
-  const listEl = document.getElementById("workList");
+  const ghost = document.getElementById("spGhost");
   const catsEl = document.getElementById("vCats");
-  const stripEl = document.getElementById("vStrip");
-  const numEl = document.getElementById("bigNum");
+  const railEl = document.getElementById("spRail");
+  const countEl = document.getElementById("spCount");
   const gCount = document.getElementById("gCount");
-
-  const layers = [imgA, imgB];
-  let list = featured.length ? featured : all;
-  let i = 0, active = 0, rows = [], thumbs = [];
+  const scrim = document.getElementById("spScrim");
+  const cap = document.getElementById("spCap");
 
   const gidx = (it) => all.indexOf(it);
   const select = (it) => onSelect?.(Object.assign({}, it, { no: gidx(it) + 1, total: all.length }));
 
-  function buildList() {
-    listEl.innerHTML = "";
-    rows = list.map((it, idx) => {
-      const b = document.createElement("button");
-      b.className = "work"; b.type = "button"; b.setAttribute("role", "option");
-      b.innerHTML = `<span class="work__cat">${(it.category || "").toLowerCase()}</span><span class="work__t">${(it.title || "untitled").toLowerCase()}</span>`;
-      b.addEventListener("pointerenter", () => { if (matchMedia("(hover:hover)").matches && idx !== i) { const d = idx > i ? 1 : -1; i = idx; show(d); } });
-      b.addEventListener("click", () => { i = idx; select(list[i]); });
-      listEl.appendChild(b);
-      return b;
-    });
-  }
-  function buildStrip() {
-    stripEl.innerHTML = "";
-    thumbs = list.map((it, idx) => {
-      const t = document.createElement("button");
-      t.className = "ex-thumb"; t.setAttribute("aria-label", it.title || "work");
-      t.innerHTML = `<img src="${thumb(it.src)}" loading="lazy" alt=""><span>${pad2(idx + 1)}</span>`;
-      t.addEventListener("click", () => { const d = idx > i ? 1 : -1; i = idx; show(d); });
-      stripEl.appendChild(t);
-      return t;
-    });
-  }
-  function preload(idx) { [idx - 1, idx + 1].forEach(k => { const it = list[(k + list.length) % list.length]; if (it) new Image().src = it.src; }); }
-  function bumpIndex(next) {
-    if (!numEl) return;
-    if (!anim()) { numEl.textContent = next; return; }
-    G.timeline()
-      .to(numEl, { yPercent: -110, opacity: 0, duration: .26, ease: "power2.in" })
-      .add(() => { numEl.textContent = next; })
-      .fromTo(numEl, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .5, ease: "expo.out" });
-  }
-  function paint() {
-    const it = list[i];
-    bumpIndex(pad2(i + 1));
-    rows.forEach((r, idx) => r.classList.toggle("is-active", idx === i));
-    thumbs.forEach((t, idx) => t.classList.toggle("on", idx === i));
-    const r = rows[i]; if (r) r.scrollIntoView({ block: "nearest" });
-    const tb = thumbs[i]; if (tb) stripEl.scrollTo({ left: tb.offsetLeft - stripEl.clientWidth / 2 + tb.clientWidth / 2, behavior: "smooth" });
-    updateFolio(gidx(it) + 1, all.length);
-    preload(i);
-  }
-  function first() {
-    paint();
-    const it = list[i];
-    layers[0].src = it.src; layers[0].classList.add("is-active");
-    layers[1].classList.remove("is-active");
-    if (G) { G.set(layers[0], { opacity: 1, zIndex: 2, clipPath: "inset(0 0 0 0)", scale: 1 }); G.set(layers[1], { opacity: 0, zIndex: 1 }); }
-    active = 0; preload(i);
-  }
-  function show(dir) {
-    paint();
-    const it = list[i];
-    const incoming = layers[1 - active], outgoing = layers[active];
-    const tmp = new Image();
-    tmp.onload = () => {
-      incoming.src = it.src;
-      incoming.classList.add("is-active"); outgoing.classList.remove("is-active");
-      if (G) {
-        G.set(incoming, { opacity: 1, zIndex: 2, clipPath: dir >= 0 ? "inset(0 0 100% 0)" : "inset(100% 0 0 0)", scale: 1.04 });
-        G.set(outgoing, { zIndex: 1 });
-        G.to(incoming, { clipPath: "inset(0 0 0% 0)", scale: 1, duration: .95, ease: "expo.out" });
-        G.to(outgoing, { y: dir >= 0 ? -12 : 12, opacity: 0, duration: .5, ease: "power2.in", onComplete: () => G.set(outgoing, { y: 0 }) });
-      } else { incoming.style.opacity = 1; outgoing.style.opacity = 0; }
-      active = 1 - active;
-    };
-    tmp.src = it.src;
-  }
-  const go = (d) => { i = (i + d + list.length) % list.length; show(d >= 0 ? 1 : -1); };
+  let list = featured.length ? featured : all;
+  let spreads = chunk(list, 6);
+  let sp = 0;
+  const nSpreads = () => spreads.length;
 
-  // category filter — "selected" = featured, else the full category
+  const plates = () => [...wall.querySelectorAll(".plate")];
+
+  function buildPlate(it, k) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "plate" + (k === 0 ? " is-anchor" : "");
+    b.style.gridArea = "abcdef"[k] || "f";
+    b.setAttribute("aria-label", (it.title || "plate").toLowerCase());
+    b.innerHTML = `<img src="${thumb(it.src)}" loading="lazy" alt="" draggable="false"><span class="plate__no">${pad3(gidx(it) + 1)}</span>`;
+    b.addEventListener("pointerenter", () => updateFolio(gidx(it) + 1, all.length));
+    b.addEventListener("click", () => openFocus(b, it));
+    return b;
+  }
+  function mountSpread(n) {
+    plates().forEach(p => p.remove());
+    wall.classList.remove("sp--A", "sp--B");
+    wall.classList.add(n % 2 === 0 ? "sp--A" : "sp--B");
+    (spreads[n] || []).forEach((it, k) => wall.appendChild(buildPlate(it, k)));
+    if (ghost) ghost.textContent = pad2(n + 1);
+    if (countEl) countEl.textContent = `spread ${pad2(n + 1)} / ${pad2(nSpreads())}`;
+    railEl?.querySelectorAll(".sp__dot").forEach((d, i) => d.classList.toggle("on", i === n));
+  }
+  // developing-plate entrance (first view only)
+  function entrance() {
+    if (!anim()) return;
+    const imgs = plates().map(p => p.querySelector("img"));
+    G.set(imgs, { clipPath: "inset(100% 0 0 0)", scale: 1.06 });
+    G.set(ghost, { yPercent: 40, opacity: 0 });
+    window.ScrollTrigger?.create({
+      trigger: wall, start: "top 82%", once: true, onEnter: () => {
+        G.to(imgs, { clipPath: "inset(0% 0 0 0)", scale: 1, duration: .85, ease: "power3.out", stagger: .07 });
+        G.to(ghost, { yPercent: 0, opacity: .06, duration: 1, ease: "power3.out" });
+      }
+    });
+  }
+  // page to another spread (prev/next, dot, filter) — a soft crossfade re-hang
+  function hangSpread(n) {
+    sp = n;
+    if (!anim()) { mountSpread(n); return; }
+    const old = plates();
+    G.to(old, {
+      opacity: 0, scale: .96, y: 8, duration: .32, ease: "power2.in", stagger: .03,
+      onComplete: () => {
+        mountSpread(n);
+        G.fromTo(plates(), { opacity: 0, scale: .96, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: .5, ease: "power2.out", stagger: .05 });
+        G.fromTo(ghost, { opacity: 0, yPercent: 20 }, { opacity: .06, yPercent: 0, duration: .6, ease: "power2.out" });
+        window.ScrollTrigger?.refresh();
+      }
+    });
+  }
+
+  /* ── Flip focus (the wow) ── */
+  let openPlate = null, dimmed = [], titleSplit = null, isOpen = false;
+  function openFocus(plate, it) {
+    if (isOpen) return;
+    isOpen = true; openPlate = plate;
+    window.lenis?.stop();
+    document.getElementById("spCapNo").textContent = `№ ${pad3(gidx(it) + 1)} / ${pad3(all.length)}`;
+    document.getElementById("spCapCat").textContent = (it.category || "").toLowerCase();
+    const titleEl = document.getElementById("spCapTitle");
+    titleEl.textContent = (it.title || "untitled").toLowerCase();
+    document.getElementById("spCapPlace").textContent = it.placement ? `placement — ${it.placement}` : "";
+    document.getElementById("spCapFull").onclick = (e) => { e.preventDefault(); closeFocus(); select(it); };
+    updateFolio(gidx(it) + 1, all.length);
+    scrim.onclick = closeFocus;
+
+    dimmed = plates().filter(p => p !== plate);
+    if (anim() && F) {
+      const state = F.getState(plate, { props: "borderRadius,boxShadow" });
+      plate.classList.add("is-open");
+      F.from(state, { absolute: true, scale: true, duration: .72, ease: "expo.inOut" });
+      G.to(dimmed, { opacity: .12, filter: "blur(3px)", scale: .985, duration: .5, ease: "power2.out" });
+      scrim.classList.add("on");
+      cap.classList.add("on");
+      titleSplit?.revert?.();
+      if (window.SplitText) { titleSplit = new window.SplitText(titleEl, { type: "lines", mask: "lines" }); G.from(titleSplit.lines, { yPercent: 110, stagger: .06, duration: .7, ease: "power2.out", delay: .34 }); }
+    } else {
+      plate.classList.add("is-open"); scrim.classList.add("on"); cap.classList.add("on");
+    }
+  }
+  function closeFocus() {
+    if (!isOpen) return;
+    isOpen = false;
+    cap.classList.remove("on"); scrim.classList.remove("on");
+    titleSplit?.revert?.(); titleSplit = null;
+    if (dimmed.length && G) G.to(dimmed, { opacity: 1, filter: "blur(0px)", scale: 1, duration: .4, ease: "power2.out" });
+    const plate = openPlate;
+    if (anim() && F && plate) {
+      const state = F.getState(plate, { props: "borderRadius,boxShadow" });
+      plate.classList.remove("is-open");
+      F.from(state, { absolute: true, scale: true, duration: .6, ease: "expo.inOut" });
+    } else { plate?.classList.remove("is-open"); }
+    window.lenis?.start();
+    openPlate = null;
+  }
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && isOpen) closeFocus(); });
+
+  /* ── dot rail + paging ── */
+  function buildRail() {
+    if (!railEl) return;
+    railEl.innerHTML = "";
+    spreads.forEach((_, k) => {
+      const d = document.createElement("button");
+      d.type = "button"; d.className = "sp__dot" + (k === sp ? " on" : ""); d.setAttribute("aria-label", `spread ${k + 1}`);
+      d.addEventListener("click", () => { if (k !== sp) hangSpread(k); });
+      railEl.appendChild(d);
+    });
+  }
+  document.getElementById("spPrev").addEventListener("click", () => hangSpread((sp - 1 + nSpreads()) % nSpreads()));
+  document.getElementById("spNext").addEventListener("click", () => hangSpread((sp + 1) % nSpreads()));
+
+  /* ── filter word-row (reuses #vCats / .v-cat) ── */
   const cats = ["selected", ...[...new Set(all.map(x => x.category))].filter(Boolean)];
   cats.forEach((cat) => {
     const b = document.createElement("button");
-    b.className = "v-cat" + (cat === "selected" ? " on" : "");
-    b.textContent = cat.toLowerCase();
+    b.type = "button"; b.className = "v-cat" + (cat === "selected" ? " on" : ""); b.textContent = cat.toLowerCase();
     b.addEventListener("click", () => {
       catsEl.querySelectorAll(".v-cat").forEach(c => c.classList.toggle("on", c === b));
       list = cat === "selected" ? (featured.length ? featured : all) : all.filter(x => x.category === cat);
-      i = 0; buildList(); buildStrip(); first();
+      spreads = chunk(list, 6); sp = 0; buildRail(); hangSpread(0);
       filterIndex(cat === "selected" ? "all" : cat);
       window.ScrollTrigger?.refresh();
     });
@@ -117,20 +161,9 @@ export async function initGallery({ items, onSelect } = {}) {
   });
   if (gCount) gCount.textContent = `${all.length} works`;
 
-  document.getElementById("vPrev").addEventListener("click", () => go(-1));
-  document.getElementById("vNext").addEventListener("click", () => go(1));
-
-  // drag + wheel + keys + click → lightbox
-  const frame = imgA.closest(".ex-frame");
-  let down = false, sx = 0, dragged = false;
-  frame.addEventListener("pointerdown", (e) => { down = true; sx = e.clientX; dragged = false; });
-  frame.addEventListener("pointermove", (e) => { if (!down) return; if (Math.abs(e.clientX - sx) > 55) { go(e.clientX < sx ? 1 : -1); sx = e.clientX; dragged = true; } });
-  window.addEventListener("pointerup", () => { down = false; });
-  frame.addEventListener("wheel", (e) => { if (Math.abs(e.deltaX) > Math.abs(e.deltaY) + 2) { e.preventDefault(); go(e.deltaX > 0 ? 1 : -1); } }, { passive: false });
-  window.addEventListener("keydown", (e) => { if (e.key === "ArrowLeft") go(-1); if (e.key === "ArrowRight") go(1); });
-  frame.addEventListener("click", () => { if (dragged) { dragged = false; return; } select(list[i]); });
-
-  buildList(); buildStrip(); first();
+  buildRail();
+  mountSpread(0);
+  entrance();
 
   /* ── complete index — 305-plate contact sheet ── */
   let idxCells = [];
@@ -140,7 +173,7 @@ export async function initGallery({ items, onSelect } = {}) {
     const frag = document.createDocumentFragment();
     idxCells = all.map((it, idx) => {
       const cell = document.createElement("button");
-      cell.className = "icell"; cell.dataset.cat = it.category || ""; cell.setAttribute("aria-label", it.title || "plate");
+      cell.type = "button"; cell.className = "icell"; cell.dataset.cat = it.category || ""; cell.setAttribute("aria-label", it.title || "plate");
       cell.innerHTML = `<img src="${thumb(it.src)}" loading="lazy" alt=""><span class="icell__no">${pad3(idx + 1)}</span>`;
       cell.addEventListener("click", () => select(it));
       frag.appendChild(cell); return cell;
