@@ -1,7 +1,7 @@
 /* Orchestration + motion (Lenis + GSAP). Degrades gracefully if libs/reduced-motion. */
 import { initGallery } from "./gallery.js?v=17";
 import { initBooking } from "./booking.js?v=13";
-import { initInkCursor, revealPlate } from "./ink.js?v=5";
+import { initInkCursor, revealPlate } from "./ink.js?v=6";
 
 const cfg = window.PULLY_CONFIG || {};
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;

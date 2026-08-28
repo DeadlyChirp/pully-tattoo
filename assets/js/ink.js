@@ -17,24 +17,37 @@ export function initInkCursor() {
   document.documentElement.classList.add("ink-on");
   const ctx = cv.getContext("2d");
   const dpr = Math.min(2, window.devicePixelRatio || 1);
-  let W, H, pts = [], mx = -99, my = -99, col = accent();
+  let W, H, col = accent();
+  const pts = [];                      // recent positions → a fine tapering stroke
+  let mx = -99, my = -99, has = false, moved = false;
   const size = () => { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px"; };
   size(); addEventListener("resize", size, { passive: true });
   addEventListener("pointermove", (e) => {
-    mx = e.clientX * dpr; my = e.clientY * dpr;
-    pts.push({ x: mx, y: my, life: 1, r: (5 + Math.random() * 7) * dpr });
-    if (pts.length > 48) pts.shift();
+    mx = e.clientX * dpr; my = e.clientY * dpr; has = true; moved = true;
+    const l = pts[pts.length - 1];
+    if (!l || (mx - l.x) * (mx - l.x) + (my - l.y) * (my - l.y) > (2 * dpr) * (2 * dpr)) pts.push({ x: mx, y: my });
+    if (pts.length > 22) pts.shift();
   }, { passive: true });
+  addEventListener("pointerdown", () => moved = true, { passive: true });
+  addEventListener("mouseleave", () => { has = false; });
   new MutationObserver(() => col = accent()).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
   (function loop() {
     ctx.clearRect(0, 0, W, H);
-    for (const p of pts) {
-      p.life -= 0.03; if (p.life <= 0) continue;
-      ctx.globalAlpha = p.life * 0.20; ctx.fillStyle = col;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (0.5 + p.life), 0, 7); ctx.fill();
+    if (!moved && pts.length) pts.shift();     // retract the tail when idle → settles like ink
+    moved = false;
+    const n = pts.length;
+    if (n > 1) {
+      ctx.strokeStyle = col;
+      for (let i = 1; i < n; i++) {
+        const t = i / (n - 1);                 // 0 tail → 1 head
+        const a = pts[i - 1], b = pts[i], m = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+        ctx.globalAlpha = 0.5 * t * t;
+        ctx.lineWidth = (0.35 + 2.1 * t) * dpr;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(a.x, a.y, m.x, m.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
     }
-    pts = pts.filter(p => p.life > 0);
-    if (mx > 0) { ctx.globalAlpha = 0.92; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(mx, my, 2.3 * dpr, 0, 7); ctx.fill(); }
+    if (has) { ctx.globalAlpha = 0.85; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(mx, my, 1.9 * dpr, 0, 7); ctx.fill(); }
     ctx.globalAlpha = 1;
     requestAnimationFrame(loop);
   })();

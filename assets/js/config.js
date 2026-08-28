@@ -13,6 +13,6 @@ window.PULLY_CONFIG = {
   studioEmail: "",
 
   instagram: "https://www.instagram.com/pully.tattooist/",
-  dm:        "https://ig.me/m/pully.tattooist",
+  dm:        "https://www.instagram.com/pully.tattooist/",
   beacons:   "https://beacons.ai/linhlinhtattoo"
 };
