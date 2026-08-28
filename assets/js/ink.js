@@ -1,57 +1,9 @@
-/* THE INK — signature effects.
-   1) initInkCursor(): a soft ink trail that follows the pointer (fine-pointer only).
-   2) revealPlate(url): a WebGL "ink-in-water" dissolve when a plate opens in the lightbox.
-   Both degrade to nothing (native cursor / plain image) with no WebGL or reduced motion. */
+/* THE INK — signature effect.
+   revealPlate(url): a WebGL "ink-in-water" dissolve when a plate opens in the lightbox.
+   Degrades to a plain image handoff with no WebGL or reduced motion. */
 
 const G = window.gsap;
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
-const accent = () => getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#b0653f";
-
-/* ── ink cursor ──────────────────────────────────────────── */
-export function initInkCursor() {
-  if (!finePointer || reduced) return;
-  const cv = document.createElement("canvas");
-  cv.id = "inkCursor"; cv.setAttribute("aria-hidden", "true");
-  document.body.appendChild(cv);
-  document.documentElement.classList.add("ink-on");
-  const ctx = cv.getContext("2d");
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  let W, H, col = accent();
-  const pts = [];                      // recent positions → a fine tapering stroke
-  let mx = -99, my = -99, has = false, moved = false;
-  const size = () => { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px"; };
-  size(); addEventListener("resize", size, { passive: true });
-  addEventListener("pointermove", (e) => {
-    mx = e.clientX * dpr; my = e.clientY * dpr; has = true; moved = true;
-    const l = pts[pts.length - 1];
-    if (!l || (mx - l.x) * (mx - l.x) + (my - l.y) * (my - l.y) > (2 * dpr) * (2 * dpr)) pts.push({ x: mx, y: my });
-    if (pts.length > 22) pts.shift();
-  }, { passive: true });
-  addEventListener("pointerdown", () => moved = true, { passive: true });
-  addEventListener("mouseleave", () => { has = false; });
-  new MutationObserver(() => col = accent()).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-  ctx.lineCap = "round"; ctx.lineJoin = "round";
-  (function loop() {
-    ctx.clearRect(0, 0, W, H);
-    if (!moved && pts.length) pts.shift();     // retract the tail when idle → settles like ink
-    moved = false;
-    const n = pts.length;
-    if (n > 1) {
-      ctx.strokeStyle = col;
-      for (let i = 1; i < n; i++) {
-        const t = i / (n - 1);                 // 0 tail → 1 head
-        const a = pts[i - 1], b = pts[i], m = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-        ctx.globalAlpha = 0.5 * t * t;
-        ctx.lineWidth = (0.35 + 2.1 * t) * dpr;
-        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(a.x, a.y, m.x, m.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-      }
-    }
-    if (has) { ctx.globalAlpha = 0.85; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(mx, my, 1.9 * dpr, 0, 7); ctx.fill(); }
-    ctx.globalAlpha = 1;
-    requestAnimationFrame(loop);
-  })();
-}
 
 /* ── WebGL ink-in-water reveal (lightbox) ───────────────────── */
 const VERT = "attribute vec2 aPos;varying vec2 vUv;void main(){vUv=aPos*0.5+0.5;gl_Position=vec4(aPos,0.,1.);}";

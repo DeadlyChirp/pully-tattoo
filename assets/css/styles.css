@@ -128,56 +128,30 @@ section{position:relative}
 .v-cat{font-family:var(--sans);font-size:.64rem;font-weight:500;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--ink-3);background:none;border:0;cursor:pointer;transition:color var(--dur-fast);padding:0}
 .v-cat:hover{color:var(--ink)}
 .v-cat.on{color:var(--accent)}
-/* the SKETCHBOOK — StPageFlip restyled as a warm plate-book */
-.book{position:relative;isolation:isolate;margin:clamp(1.8rem,4vw,3rem) auto 0;width:min(100%,1160px);min-height:clamp(360px,52vh,600px);touch-action:pan-y}
-.book:not(.is-live){display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;min-height:0}
-.book:not(.is-live) .page--verso,.book:not(.is-live) .page--cover,.book:not(.is-live) .page--colophon,.book:not(.is-live) .page--back{display:none}
-.book:not(.is-live) .page--recto{position:relative!important;height:auto;aspect-ratio:3/4;box-shadow:none}
-/* StPageFlip required positioning + soft shadow layers */
-.stf__parent{position:relative;display:block;box-sizing:border-box;transform:translateZ(0);perspective:2200px}
-.stf__parent canvas{position:absolute;width:100%;height:100%;left:0;top:0}
-.stf__block{position:absolute;width:100%;height:100%;box-sizing:border-box;perspective:2200px}
-.stf__item{display:none;position:absolute;transform-style:preserve-3d}
-.stf__outerShadow,.stf__innerShadow,.stf__hardShadow,.stf__hardInnerShadow{position:absolute;left:0;top:0}
-/* a page (warm paper) */
-.page{position:relative;overflow:hidden;box-sizing:border-box;width:100%;height:100%;background:var(--paper-recto);color:var(--ink);display:flex;flex-direction:column}
-.page::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pg)'/%3E%3C/svg%3E")}
-.page--verso{background:var(--paper-verso);box-shadow:inset -20px 0 34px -26px var(--gutter)}
-.page--recto{box-shadow:inset 20px 0 34px -26px var(--gutter)}
-/* recto / plate (tipped-in print) */
-.page__plate{margin:auto;width:min(74%,320px);padding:8px;background:var(--paper-recto);border-radius:var(--r);box-shadow:var(--shadow);cursor:pointer}
-.page__win{position:relative;overflow:hidden;aspect-ratio:3/4;background:var(--bg-2)}
-.page__win img{width:100%;height:100%;object-fit:cover;filter:var(--grade)}
-.page__no{position:absolute;right:clamp(1.1rem,2.6vw,2rem);bottom:clamp(1rem,2.4vw,1.7rem);font-family:var(--sans);font-weight:500;font-size:.56rem;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--ink-2);font-variant-numeric:tabular-nums}
-/* verso / notes */
-.page__pad{padding:clamp(1.5rem,3.4vw,2.8rem);display:flex;flex-direction:column;gap:1rem;height:100%}
-.page__idx{font-family:var(--sans);font-weight:300;font-size:clamp(1.5rem,2.8vw,2.2rem);letter-spacing:var(--ls-index);color:var(--ink-3);font-variant-numeric:tabular-nums;line-height:1}
-.page__title{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.14;color:var(--ink)}
-.page__meta{margin-top:.5rem;display:flex;flex-direction:column;gap:.75rem;max-width:24ch}
-.page__meta div{display:flex;gap:.6rem;font-family:var(--sans);font-size:.6rem;font-weight:500;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--ink-2);padding-bottom:.75rem;border-bottom:1px solid var(--line-2)}
-.page__meta div::before{content:"—";color:var(--accent)}
-.page__meta b{color:var(--ink);font-weight:500}
-.page__open{margin-top:auto;padding-top:1rem}
-/* cover / colophon / back matter */
-.page--cover,.page--colophon,.page--back{background:var(--bg-2);justify-content:center}
-.page--cover .page__pad,.page--colophon .page__pad,.page--back .page__pad{justify-content:center;gap:1.1rem}
-.page__brand{font-family:var(--sans);font-weight:600;font-size:clamp(2rem,4.4vw,3.4rem);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1}
-.page__sub{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(1.1rem,2.4vw,1.7rem);color:var(--accent)}
-.page__edition{font-family:var(--sans);font-size:.6rem;font-weight:500;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--ink-2)}
-.page__body{font-family:var(--sans);font-size:.92rem;font-weight:300;color:var(--ink-2);line-height:1.6;max-width:34ch}
-.page__ghost{position:absolute;right:-.04em;bottom:-.12em;z-index:0;font-family:var(--sans);font-weight:300;font-size:clamp(120px,22vw,240px);letter-spacing:var(--ls-index);color:var(--ink-3);opacity:.5;line-height:.7;pointer-events:none;font-variant-numeric:tabular-nums}
-.page--cover .page__pad,.page--colophon .page__pad,.page--back .page__pad{position:relative;z-index:1}
-.page__sig{font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--ink)}
-/* book bar + progress rail */
-.book__bar{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;margin-top:clamp(1.4rem,3vw,2.2rem);padding-top:1.2rem;border-top:1px solid var(--line-2)}
-.book__nav{display:flex;gap:1.6rem}
-.book__nav button,.book__count{font-family:var(--sans);font-size:.64rem;font-weight:500;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--ink-2);font-variant-numeric:tabular-nums}
-.book__nav button{background:none;border:0;cursor:pointer;transition:color var(--dur-fast);padding:0}
-.book__nav button:hover:not(:disabled){color:var(--ink)}
-.book__nav button:disabled{opacity:.35;cursor:not-allowed}
-.book__index-link{font-size:.64rem}
-.book__rail{margin-top:1rem;height:1px;background:var(--line-2);position:relative;overflow:hidden}
-.book__rail-fill{position:absolute;left:0;top:0;height:100%;width:0;background:var(--accent);transition:width .5s var(--ease)}
+.film__head .v-cats{margin-top:1.4rem;margin-bottom:0}
+
+/* ── THE FILM — full-bleed cinema reel (ambient blurred backdrop + parallax plate) ── */
+.film{padding-bottom:0}
+.film__head{position:relative;z-index:2}
+.film__reel{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-top:clamp(2rem,5vw,3.4rem)}
+.film__panel{position:relative;width:100vw;height:100svh;min-height:520px;overflow:hidden;display:flex;align-items:center;justify-content:center;isolation:isolate;background:var(--bg-2);content-visibility:auto;contain-intrinsic-size:100vw 100svh}
+.film__bg{position:absolute;inset:-10% -6%;background-size:cover;background-position:center;filter:blur(40px) saturate(1.3) brightness(.74);transform:scale(1.14);z-index:0}
+:root[data-theme="dark"] .film__bg{filter:blur(40px) saturate(1.25) brightness(.46)}
+.film__vig{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(125% 78% at 50% 40%,transparent 34%,rgba(0,0,0,.42) 100%)}
+.film__plate{position:relative;z-index:2;height:min(78svh,760px);aspect-ratio:3/4;border-radius:var(--r);overflow:hidden;box-shadow:0 46px 100px -34px rgba(0,0,0,.66),0 12px 34px -14px rgba(0,0,0,.42);cursor:pointer;background:#111}
+.film__plate img{width:100%;height:100%;object-fit:cover;filter:var(--grade);transform:scale(1.04)}
+.film__meta{position:absolute;z-index:3;left:clamp(1.25rem,5vw,5rem);bottom:clamp(2rem,7vh,5rem);max-width:min(88vw,36ch);color:#fff;text-shadow:0 2px 22px rgba(0,0,0,.6);pointer-events:none}
+.film__idx{display:block;font-family:var(--sans);font-weight:300;font-size:clamp(2.6rem,7vw,5.4rem);letter-spacing:var(--ls-index);line-height:.9;color:rgba(255,255,255,.92);font-variant-numeric:tabular-nums}
+.film__title{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(1.7rem,4vw,3rem);line-height:1.08;margin-top:.35rem;color:#fff}
+.film__sub{font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:var(--ls-label);text-transform:uppercase;color:rgba(255,255,255,.78);margin-top:.8rem}
+.film__open{display:inline-block;margin-top:1rem;font-family:var(--sans);font-size:.62rem;font-weight:500;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--accent-2)}
+.film__count{position:absolute;z-index:3;right:clamp(1.25rem,5vw,5rem);top:clamp(1.6rem,6vh,4rem);font-family:var(--sans);font-size:.62rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.72);font-variant-numeric:tabular-nums;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+.film__foot{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;max-width:var(--maxw);margin:clamp(1.6rem,4vw,2.6rem) auto 0;padding-top:1.2rem;border-top:1px solid var(--line-2)}
+.book__count{font-family:var(--sans);font-size:.64rem;font-weight:500;letter-spacing:var(--ls-label);text-transform:uppercase;color:var(--ink-2);font-variant-numeric:tabular-nums}
+@media(max-width:640px){
+  .film__plate{height:auto;width:min(86vw,440px);max-height:72svh}
+  .film__meta{left:1.25rem;right:1.25rem;bottom:1.4rem;max-width:none}
+}
 
 /* ── § colophon — the hand ── */
 .colophon{padding:var(--section) var(--pad);max-width:var(--maxw);margin:0 auto;border-top:1px solid var(--line)}
@@ -314,18 +288,7 @@ section{position:relative}
 .loader{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;align-items:center;justify-content:center}
 .loader__count{font-family:var(--sans);font-size:.85rem;font-weight:500;letter-spacing:.4em;color:var(--ink-2);font-variant-numeric:tabular-nums}
 
-/* loupe cursor */
-.cursor{position:fixed;top:0;left:0;z-index:200;pointer-events:none;width:11px;height:11px;border:1px solid var(--ink);border-radius:50%;transform:translate(-50%,-50%);display:none;align-items:center;justify-content:center;transition:width var(--dur-fast) var(--ease),height var(--dur-fast) var(--ease),background var(--dur-fast),border-color var(--dur-fast)}
-.cursor.is-hover{width:80px;height:80px;background:color-mix(in srgb,var(--accent) 8%,transparent);border-color:var(--accent)}
-.cursor__label{font-family:var(--sans);font-size:.46rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);opacity:0;transition:opacity var(--dur-fast);white-space:nowrap;font-variant-numeric:tabular-nums}
-.cursor.is-hover .cursor__label{opacity:1}
-html.cursor-on,html.cursor-on a,html.cursor-on button,html.cursor-on .ex-frame,html.cursor-on .ex-thumb,html.cursor-on .icell,html.cursor-on .floatie__in,html.cursor-on .work{cursor:none}
-html.cursor-on input,html.cursor-on textarea,html.cursor-on select{cursor:auto}
-/* THE INK — signature effects */
-#inkCursor{position:fixed;inset:0;z-index:210;pointer-events:none;mix-blend-mode:multiply}
-:root[data-theme="dark"] #inkCursor{mix-blend-mode:screen}
-html.ink-on,html.ink-on a,html.ink-on button,html.ink-on .plate,html.ink-on .icell,html.ink-on .page__plate,html.ink-on .floatie__in{cursor:none}
-html.ink-on input,html.ink-on textarea,html.ink-on select,html.ink-on .book,html.ink-on [data-lenis-prevent]{cursor:auto}
+/* ink-in-water reveal canvas (lightbox only) */
 .lightbox__fx{position:absolute;inset:0;z-index:3;width:100%;height:100%;pointer-events:none;opacity:0}
 .lightbox__fx.on{opacity:1}
 
@@ -339,7 +302,6 @@ html.anim .reveal{opacity:0}
 @media(max-width:900px){
   .lead__brand{display:none}
   .lead__foot{position:static;margin-top:2rem;flex-direction:row;flex-wrap:wrap}
-  .book{max-width:460px}
   .colophon__body,.notes__cols{grid-template-columns:1fr}
   .sitting__grid{grid-template-columns:repeat(2,1fr)}
   .booking__grid{grid-template-columns:1fr}

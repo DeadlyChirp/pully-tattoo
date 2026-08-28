@@ -1,9 +1,9 @@
-/* Galerie — THE SKETCHBOOK.
-   A warm plate-book you leaf through (StPageFlip): cover → per-piece spread
-   (verso notes / recto plate) → colophon. Tap a plate → full lightbox.
-   The word-row filter re-paginates the book and re-sorts the 305 index.
-   Falls back to a quiet paper grid with no JS / reduced-motion.
-   (Engine = page-flip@2.0.7, global St.PageFlip — restyled entirely in CSS.) */
+/* Galerie — THE FILM.
+   A full-bleed cinema reel: each featured plate takes the whole viewport,
+   sitting over an ambient blurred backdrop drawn from its own colours, with the
+   plate and backdrop parallaxing at different depths. Tap a plate → full lightbox.
+   The word-row filter re-cuts the reel and re-sorts the 305 index.
+   Degrades to a stack of full-bleed stills with no JS / reduced-motion. */
 
 const thumb = (src) => src.replace("/assets/img/", "/assets/img/thumb/");
 const pad2 = (n) => String(n).padStart(2, "0");
@@ -13,17 +13,8 @@ const G = window.gsap;
 const anim = () => document.documentElement.classList.contains("anim") && !!G;
 
 export async function initGallery({ items, onSelect } = {}) {
-  const wrap = document.getElementById("bookWrap");
-  if (!wrap) return;
-  let book;
-  const freshBook = () => {
-    wrap.innerHTML = "";
-    book = document.createElement("div");
-    book.className = "book";
-    book.setAttribute("aria-label", "pully sketchbook — drag a corner to turn the page");
-    wrap.appendChild(book);
-    return book;
-  };
+  const reel = document.getElementById("filmReel");
+  if (!reel) return;
   const all = items || ((await (await fetch("./data/images.json")).json()).items || []);
   if (!all.length) return;
   const featured = all.filter(x => x.featured);
@@ -31,112 +22,56 @@ export async function initGallery({ items, onSelect } = {}) {
   const catsEl = document.getElementById("vCats");
   const gCount = document.getElementById("gCount");
   const countEl = document.getElementById("bookCount");
-  const railFill = document.getElementById("bookRailFill");
-  const btnPrev = document.getElementById("bookPrev");
-  const btnNext = document.getElementById("bookNext");
 
   const gidx = (it) => all.indexOf(it);
   const select = (it) => onSelect?.(Object.assign({}, it, { no: gidx(it) + 1, total: all.length }));
 
   let list = featured.length ? featured : all;
-  let pf = null, pfState = "read";
+  let reelST = [];                                   // scroll-triggers to kill on re-cut
 
-  /* ── page builders ── */
-  function coverPage(n) {
-    const d = document.createElement("div");
-    d.className = "page page--cover"; d.setAttribute("data-density", "hard");
-    d.innerHTML = `<span class="page__ghost">${pad2(n)}</span><div class="page__pad"><span class="page__brand">pully</span><span class="page__sub">a sketchbook</span><span class="page__edition">plates 001–${pad3(n)} · <span class="vi">hà nội</span></span></div>`;
-    return d;
-  }
-  function notesPage(it, i, total) {
-    const d = document.createElement("div");
-    d.className = "page page--verso";
-    const ink = (it.palette === "black" || !it.palette) ? "black" : "with colour";
-    d.innerHTML = `<div class="page__pad">
-      <span class="page__idx">№ ${pad3(i + 1)} / ${pad3(total)}</span>
-      <h3 class="page__title">${esc((it.title || "untitled").toLowerCase())}</h3>
-      <div class="page__meta">
-        <div>placement<b>${esc(it.placement || "—")}</b></div>
-        <div>category<b>${esc((it.category || "—").toLowerCase())}</b></div>
-        <div>ink<b>${ink}</b></div>
-      </div>
-      <span class="page__open"><a class="link" href="#" data-open="1">open full plate →</a></span>
-    </div>`;
-    d.querySelector("[data-open]").addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); if (pfState === "read") select(it); });
-    return d;
-  }
-  function platePage(it) {
-    const d = document.createElement("div");
-    d.className = "page page--recto";
-    d.innerHTML = `<figure class="page__plate"><div class="page__win"><img data-src="${thumb(it.src)}" alt="${esc(it.title || "")}" draggable="false" decoding="async"></div></figure><span class="page__no">pl. ${pad3(gidx(it) + 1)}</span>`;
-    const fig = d.querySelector(".page__plate");
-    fig.addEventListener("click", (e) => { e.stopPropagation(); if (pfState === "read") select(it); });
-    fig.addEventListener("mousedown", (e) => e.stopPropagation());
-    fig.addEventListener("touchstart", (e) => e.stopPropagation(), { passive: true });
-    return d;
-  }
-  function creditsPage() {
-    const d = document.createElement("div");
-    d.className = "page page--back"; d.setAttribute("data-density", "hard");
-    d.innerHTML = `<div class="page__pad"><span class="shead__kick">colophon</span><span class="page__sig">pully</span><div class="page__meta"><div>tattooed &amp; drawn by<b>pully</b></div><div class="vi">located<b class="vi">hà nội, vn</b></div><div>working<b>by appointment</b></div></div></div>`;
-    return d;
-  }
-  function linksPage() {
-    const d = document.createElement("div");
-    d.className = "page page--back"; d.setAttribute("data-density", "hard");
-    d.innerHTML = `<div class="page__pad"><span class="shead__kick">the archive</span><a class="link" href="#index">complete index — 305 plates →</a><a class="link" href="#booking">book a sitting →</a><span class="page__edition">fin</span></div>`;
-    return d;
-  }
-  function buildPages(l) {
-    const pages = [coverPage(l.length)];
-    l.forEach((it, i) => { pages.push(notesPage(it, i, l.length)); pages.push(platePage(it)); });
-    pages.push(creditsPage(), linksPage());
-    return pages;
+  const setCurrent = (i) => {
+    const it = list[i]; if (!it) return;
+    if (countEl) countEl.textContent = `plate ${pad2(i + 1)} / ${pad2(list.length)}`;
+    updateFolio(gidx(it) + 1, all.length);
+  };
+
+  /* ── one cinema panel ── */
+  function panel(it, i) {
+    const el = document.createElement("article");
+    el.className = "film__panel";
+    el.innerHTML =
+      `<div class="film__bg" style="background-image:url('${thumb(it.src)}')"></div>` +
+      `<span class="film__vig"></span>` +
+      `<figure class="film__plate"><img src="${it.src}" alt="${esc(it.title || "")}" loading="lazy" decoding="async" draggable="false"></figure>` +
+      `<div class="film__meta"><span class="film__idx">${pad2(i + 1)}</span>` +
+      `<h3 class="film__title">${esc((it.title || "untitled").toLowerCase())}</h3>` +
+      `<p class="film__sub">${esc(it.placement || "—")} · ${esc((it.category || "—").toLowerCase())}</p>` +
+      `<span class="film__open">open plate →</span></div>` +
+      `<span class="film__count">${pad2(i + 1)} / ${pad2(list.length)}</span>`;
+    el.querySelector(".film__plate").addEventListener("click", () => select(it));
+    return el;
   }
 
-  const pieceAtPage = (p) => (p < 1 ? null : list[Math.floor((p - 1) / 2)] || null);
-  function lazyAround(p) {
-    const ps = book.querySelectorAll(".page");
-    for (let k = Math.max(0, p - 2); k <= Math.min(ps.length - 1, p + 3); k++) {
-      const im = ps[k]?.querySelector("img[data-src]");
-      if (im) { im.src = im.dataset.src; im.removeAttribute("data-src"); }
-    }
-  }
-  function loadAllThumbs() { book.querySelectorAll("img[data-src]").forEach(im => { im.src = im.dataset.src; im.removeAttribute("data-src"); }); }
+  function buildReel(l) {
+    reelST.forEach(s => s && s.kill());
+    reelST = [];
+    reel.innerHTML = "";
+    l.forEach((it, i) => reel.appendChild(panel(it, i)));
 
-  function updateBookUI() {
-    const total = pf ? pf.getPageCount() : book.querySelectorAll(".page").length;
-    const cur = pf ? pf.getCurrentPageIndex() : 0;
-    const it = pieceAtPage(cur);
-    if (countEl) countEl.textContent = it ? `plate ${pad2(list.indexOf(it) + 1)} / ${pad2(list.length)}` : (cur === 0 ? "cover" : "colophon");
-    if (railFill) railFill.style.width = total > 1 ? `${(cur / (total - 1)) * 100}%` : "0%";
-    if (btnPrev) btnPrev.disabled = cur <= 0;
-    if (btnNext) btnNext.disabled = cur >= total - 1;
-    if (it) updateFolio(gidx(it) + 1, all.length);
-  }
+    if (!(anim() && window.ScrollTrigger)) { setCurrent(0); return; }
 
-  function mountBook(l) {
-    if (pf) { try { pf.destroy(); } catch { /* ignore */ } pf = null; }
-    freshBook();
-    buildPages(l).forEach(p => book.appendChild(p));
-
-    if (!(anim() && window.St && window.St.PageFlip)) { loadAllThumbs(); updateBookUI(); return; }
-
-    pf = new window.St.PageFlip(book, {
-      width: 400, height: 545, size: "stretch",
-      minWidth: 260, maxWidth: 620, minHeight: 340, maxHeight: 820,
-      maxShadowOpacity: 0.22, showCover: true, usePortrait: true,
-      mobileScrollSupport: false, drawShadow: true, flippingTime: 780, useMouseEvents: true
+    reel.querySelectorAll(".film__panel").forEach((el, i) => {
+      const bg = el.querySelector(".film__bg");
+      const img = el.querySelector(".film__plate img");
+      const meta = el.querySelectorAll(".film__meta > *");
+      const t1 = G.fromTo(bg, { yPercent: -8 }, { yPercent: 8, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
+      const t2 = G.fromTo(img, { yPercent: -6, scale: 1.09 }, { yPercent: 6, scale: 1.02, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
+      const t3 = G.from(meta, { y: 36, opacity: 0, duration: .9, stagger: .08, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 62%" } });
+      const st = window.ScrollTrigger.create({ trigger: el, start: "top center", end: "bottom center", onToggle: (self) => { if (self.isActive) setCurrent(i); } });
+      reelST.push(t1.scrollTrigger, t2.scrollTrigger, t3.scrollTrigger, st);
     });
-    pf.loadFromHTML(book.querySelectorAll(".page"));
-    book.classList.add("is-live");
-    lazyAround(0); updateBookUI();
-    pf.on("flip", (e) => { lazyAround(e.data); updateBookUI(); });
-    pf.on("changeState", (e) => { pfState = e.data; if (pfState !== "read") window.lenis?.stop(); else window.lenis?.start(); });
+    setCurrent(0);
   }
-
-  btnPrev?.addEventListener("click", () => pf ? pf.flipPrev() : null);
-  btnNext?.addEventListener("click", () => pf ? pf.flipNext() : null);
 
   /* ── filter word-row (reuses #vCats / .v-cat) ── */
   const cats = ["selected", ...[...new Set(all.map(x => x.category))].filter(Boolean)];
@@ -146,7 +81,7 @@ export async function initGallery({ items, onSelect } = {}) {
     b.addEventListener("click", () => {
       catsEl.querySelectorAll(".v-cat").forEach(c => c.classList.toggle("on", c === b));
       list = cat === "selected" ? (featured.length ? featured : all) : all.filter(x => x.category === cat);
-      mountBook(list);
+      buildReel(list);
       filterIndex(cat === "selected" ? "all" : cat);
       window.ScrollTrigger?.refresh();
     });
@@ -154,7 +89,7 @@ export async function initGallery({ items, onSelect } = {}) {
   });
   if (gCount) gCount.textContent = `${all.length} works`;
 
-  mountBook(list);
+  buildReel(list);
 
   /* ── complete index — 305-plate contact sheet ── */
   let idxCells = [];

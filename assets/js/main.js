@@ -1,7 +1,7 @@
 /* Orchestration + motion (Lenis + GSAP). Degrades gracefully if libs/reduced-motion. */
-import { initGallery } from "./gallery.js?v=17";
+import { initGallery } from "./gallery.js?v=18";
 import { initBooking } from "./booking.js?v=13";
-import { initInkCursor, revealPlate } from "./ink.js?v=6";
+import { revealPlate } from "./ink.js?v=7";
 
 const cfg = window.PULLY_CONFIG || {};
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -187,9 +187,6 @@ function buildFloatStage(items) {
 
   objs.forEach(o => G.to(o.el, { yPercent: -o.depth * 20, ease: "none", scrollTrigger: { trigger: "#top", start: "top top", end: "bottom top", scrub: true } }));
 }
-
-/* ── the ink — cursor trail ────────────────────────────── */
-if (animate) initInkCursor();
 
 /* ── init ──────────────────────────────────────────────── */
 initBooking();
