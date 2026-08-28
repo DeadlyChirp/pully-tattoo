@@ -1,7 +1,8 @@
 /* Orchestration + motion (Lenis + GSAP). Degrades gracefully if libs/reduced-motion. */
-import { initGallery } from "./gallery.js?v=18";
+import { initGallery } from "./gallery.js?v=19";
 import { initBooking } from "./booking.js?v=13";
 import { revealPlate } from "./ink.js?v=7";
+import { playIntro } from "./intro.js?v=5";
 
 const cfg = window.PULLY_CONFIG || {};
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -135,11 +136,7 @@ function runHero() {
 function curtain() {
   if (sessionStorage.getItem("pully_seen")) { if (loader) loader.style.display = "none"; runHero(); return; }
   sessionStorage.setItem("pully_seen", "1");
-  const lc = document.getElementById("loaderCount"), o = { n: 0 };
-  G.to(o, { n: 305, duration: 1.2, ease: "power2.out", onUpdate: () => { lc.textContent = String(Math.round(o.n)).padStart(3, "0"); } });
-  Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1600))]).then(() => {
-    G.timeline().to(loader, { yPercent: -100, duration: .9, ease: "expo.inOut", delay: .2, onComplete: () => { loader.style.display = "none"; } }).add(runHero, "-=0.45");
-  });
+  playIntro({ data: dataReady, onDone: runHero });
 }
 
 /* ── floating tattoo field ─────────────────────────────── */
